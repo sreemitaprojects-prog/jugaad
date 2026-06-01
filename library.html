@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Jugaad Library -- Every Category Guide</title>
+  <meta name="description" content="Prices, tips, red flags and negotiation scripts for every type of vendor a college fest organiser needs."/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --orange:#FF6B00;--orange-light:#FF8C38;--orange-pale:#FFF3E8;
+      --yellow:#FFD012;--yellow-pale:#FFFBE6;
+      --dark:#1A1200;--dark-2:#2E2200;--mid:#6B5000;--muted:#A07820;
+      --surface:#FFFDF7;--surface-2:#FFF8EC;--border:#FFE4B0;--white:#FFFFFF;
+      --radius:16px;--radius-sm:10px;--shadow:0 4px 24px rgba(255,107,0,0.10);
+    }
+    html,body{font-family:'Poppins',sans-serif;background:var(--surface);color:var(--dark);}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:60px;background:rgba(255,253,247,0.94);backdrop-filter:blur(12px);border-bottom:1.5px solid var(--border);}
+    .nav-logo{font-size:22px;font-weight:900;color:var(--orange);letter-spacing:-0.5px;text-decoration:none;}
+    .nav-logo span{color:var(--dark);}
+    .nav-links{display:flex;gap:24px;align-items:center;}
+    .nav-links a{font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;transition:color 0.15s;}
+    .nav-links a:hover{color:var(--orange);}
+    .nav-links a.active{color:var(--orange);}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:100px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.18s;text-decoration:none;white-space:nowrap;}
+    .btn-primary{background:var(--orange);color:#fff;}
+    .btn-primary:hover{background:var(--orange-light);transform:translateY(-1px);}
+
+    /* HERO */
+    .page-hero{padding:110px 24px 56px;background:linear-gradient(150deg,var(--yellow-pale) 0%,var(--surface) 60%);border-bottom:1.5px solid var(--border);text-align:center;}
+    .hero-eyebrow{display:inline-block;background:var(--yellow);color:var(--dark-2);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 14px;border-radius:100px;margin-bottom:18px;}
+    .page-hero h1{font-size:clamp(30px,6vw,54px);font-weight:900;letter-spacing:-2px;color:var(--dark);margin-bottom:12px;line-height:1.05;}
+    .page-hero h1 span{color:var(--orange);}
+    .page-hero p{font-size:15px;color:var(--mid);max-width:500px;margin:0 auto;line-height:1.7;}
+
+    /* CATEGORY SELECTOR GRID */
+    .selector-wrap{padding:40px 24px 0;max-width:960px;margin:0 auto;}
+    .selector-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:14px;}
+    .selector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
+    .sel-btn{
+      display:flex;flex-direction:column;align-items:center;gap:6px;
+      padding:14px 10px;border-radius:var(--radius-sm);
+      border:1.5px solid var(--border);background:var(--white);
+      cursor:pointer;font-family:'Poppins',sans-serif;
+      transition:all 0.18s ease;text-align:center;
+    }
+    .sel-btn:hover{border-color:var(--cat-color);background:var(--orange-pale);transform:translateY(-2px);}
+    .sel-btn.active{border-color:var(--cat-color);background:var(--cat-color);color:#fff;}
+    .sel-btn.active .sel-label{color:#fff;}
+    .sel-icon{font-size:24px;line-height:1;}
+    .sel-label{font-size:12px;font-weight:700;color:var(--mid);line-height:1.3;}
+
+    /* DEEP DIVE PANEL */
+    .panel-wrap{max-width:960px;margin:32px auto 80px;padding:0 24px;}
+
+    .panel{
+      background:var(--white);border-radius:var(--radius);
+      border:1.5px solid var(--border);
+      overflow:hidden;
+      animation:panelIn 0.3s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    @keyframes panelIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+    .panel-hero{
+      padding:32px 32px 28px;
+      border-bottom:1.5px solid var(--border);
+      background:linear-gradient(120deg,var(--panel-pale,#FFF3E8) 0%,var(--white) 70%);
+      display:flex;align-items:flex-start;gap:20px;
+    }
+    .panel-icon-wrap{
+      width:60px;height:60px;border-radius:14px;flex-shrink:0;
+      background:var(--cat-color);display:flex;align-items:center;justify-content:center;
+      font-size:28px;box-shadow:0 4px 14px rgba(0,0,0,0.12);
+    }
+    .panel-title-wrap{}
+    .panel-cat-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--cat-color);margin-bottom:4px;}
+    .panel-title{font-size:clamp(20px,4vw,28px);font-weight:900;color:var(--dark);letter-spacing:-0.5px;margin-bottom:6px;}
+    .panel-desc{font-size:13px;color:var(--mid);line-height:1.7;max-width:520px;}
+
+    /* TABS */
+    .panel-tabs{display:flex;gap:0;border-bottom:1.5px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+    .panel-tabs::-webkit-scrollbar{display:none;}
+    .tab-btn{
+      padding:14px 20px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;
+      color:var(--muted);background:none;border:none;cursor:pointer;
+      border-bottom:2.5px solid transparent;white-space:nowrap;transition:all 0.15s;
+      text-transform:uppercase;letter-spacing:0.5px;
+    }
+    .tab-btn:hover{color:var(--dark);}
+    .tab-btn.active{color:var(--cat-color);border-bottom-color:var(--cat-color);}
+
+    /* TAB CONTENT */
+    .tab-content{padding:28px 32px;display:none;}
+    .tab-content.active{display:block;}
+
+    /* PRICES */
+    .price-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:4px;}
+    .price-card{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:16px;}
+    .price-item-name{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.3px;}
+    .price-value{font-size:20px;font-weight:900;color:var(--cat-color);}
+    .price-note{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4;}
+    .price-intro{font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:18px;}
+
+    /* LISTS */
+    .guide-list{list-style:none;display:flex;flex-direction:column;gap:12px;}
+    .guide-list li{display:flex;gap:14px;align-items:flex-start;font-size:14px;color:var(--mid);line-height:1.65;}
+    .list-marker{width:24px;height:24px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;margin-top:1px;}
+    .marker-ask{background:var(--orange-pale);color:var(--orange);}
+    .marker-check{background:#E8F5E9;color:#2E7D32;}
+    .marker-flag{background:#FFEBEE;color:#C62828;}
+    .marker-nego{background:var(--yellow-pale);color:#7B5800;}
+
+    .tip-box{background:var(--yellow-pale);border-left:4px solid var(--yellow);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:14px 16px;font-size:13px;color:var(--dark-2);line-height:1.7;margin-top:20px;}
+    .tip-box strong{font-weight:700;}
+
+    /* EMPTY STATE */
+    .empty-state{text-align:center;padding:80px 24px;}
+    .empty-state .big-icon{font-size:56px;margin-bottom:16px;}
+    .empty-state h2{font-size:22px;font-weight:800;color:var(--dark);margin-bottom:8px;}
+    .empty-state p{font-size:14px;color:var(--muted);}
+
+    /* FOOTER */
+    footer{background:var(--dark);color:rgba(255,255,255,0.6);padding:28px 24px;text-align:center;font-size:13px;}
+    .footer-name{color:var(--yellow);font-weight:700;}
+    .footer-links{display:flex;justify-content:center;gap:20px;margin-top:10px;}
+    footer a{color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.15s;font-size:13px;}
+    footer a:hover{color:var(--orange-light);}
+
+    @media(max-width:600px){
+      .nav-links{display:none;}
+      .panel-hero{flex-direction:column;gap:14px;padding:22px 20px 18px;}
+      .tab-content{padding:20px 18px;}
+      .price-grid{grid-template-columns:1fr 1fr;}
+      .selector-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="../index.html"><span>जु</span>gaad</a>
+  <div class="nav-links">
+    <a href="../explore.html">Explore</a>
+    <a href="index.html" class="active">Library</a>
+    <a href="../submit.html">Submit a Spot</a>
+  </div>
+  <div class="nav-right" style="display:flex;gap:10px;">
+    <a class="btn btn-primary" style="padding:6px 14px;font-size:12px;" href="../explore.html">Find Jugaad</a>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="hero-eyebrow">10 Guides · All Free</div>
+  <h1>The <span>Jugaad</span> Library</h1>
+  <p>Everything you need to know before spending a rupee. Pick a category and get the full breakdown -- prices, what to ask, checklists, red flags, how to negotiate.</p>
+</section>
+
+<div class="selector-wrap">
+  <div class="selector-label">Pick a category</div>
+  <div class="selector-grid" id="selector-grid"></div>
+</div>
+
+<div class="panel-wrap">
+  <div class="empty-state" id="empty-state">
+    <div class="big-icon">☝️</div>
+    <h2>Pick a category above</h2>
+    <p>Select any category to see prices, what to ask, checklists, red flags and negotiation tips.</p>
+  </div>
+  <div class="panel" id="main-panel" style="display:none;"></div>
+</div>
+
+<div style="background:var(--dark);padding:40px 28px;text-align:center;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:10px;">Know a spot that should be on the map?</p>
+  <h3 style="font-size:20px;font-weight:900;color:#fff;letter-spacing:-0.5px;margin-bottom:16px;">Submit your <span style="color:var(--yellow);">Jugaad</span></h3>
+  <a style="display:inline-flex;align-items:center;padding:9px 20px;border-radius:100px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;background:var(--yellow);color:var(--dark-2);text-decoration:none;transition:all 0.18s;" href="../submit.html">Submit your Jugaad</a>
+</div>
+
+<footer>
+  <div style="font-size:24px;font-weight:900;color:var(--orange);margin-bottom:6px;letter-spacing:-0.5px;"><span style="color:rgba(255,255,255,0.8);">जु</span>gaad</div>
+  <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:16px;">Your college budget kit · Crowdsourced by students</div>
+  <div style="display:flex;justify-content:center;gap:24px;margin-bottom:20px;flex-wrap:wrap;">
+    <a href="../explore.html" style="color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;font-weight:500;">Explore</a>
+    <a href="index.html" style="color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;font-weight:500;">Library</a>
+    <a href="../submit.html" style="color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;font-weight:500;">Submit a Spot</a>
+    <a href="https://www.instagram.com/sreemitamukherjee/" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;font-weight:500;">Instagram</a>
+    <a href="https://www.linkedin.com/in/sreemita-mukherjee-b19936323/" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;font-weight:500;">LinkedIn</a>
+  </div>
+  <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+    <span style="font-size:11px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4);padding:3px 12px;border-radius:100px;">Delhi</span>
+    <span style="font-size:11px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4);padding:3px 12px;border-radius:100px;">Kolkata</span>
+    <span style="font-size:11px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4);padding:3px 12px;border-radius:100px;">Pune</span>
+    <span style="font-size:11px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4);padding:3px 12px;border-radius:100px;">Bengaluru</span>
+    <span style="font-size:11px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4);padding:3px 12px;border-radius:100px;">Manipal</span>
+  </div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.25);">Made with love by <span style="color:var(--yellow);font-weight:700;">Sreemita</span></div>
+</footer>
+
+<script>
+const CATS = [
+  {
+    id:'printers', icon:'🖨️', color:'#1E88E5', pale:'#E3F2FD',
+    name:'Cheap Printers',
+    desc:'Certificates, ID cards, pamphlets, invites -- print shops are the most used vendor at any fest. Here\'s how to work with them without overpaying.',
+    priceIntro:'Prices vary wildly by city and quantity. Always ask for a per-unit rate at different quantities -- most shops drop the rate at 100+ units.',
+    prices:[
+      {item:'A4 B&W Print',value:'₹1–3',note:'per sheet, single side'},
+      {item:'A4 Colour Print',value:'₹8–15',note:'per sheet'},
+      {item:'Certificate (Glossy)',value:'₹15–30',note:'per piece, 200+ gsm'},
+      {item:'ID Card (PVC)',value:'₹25–60',note:'with lanyard'},
+      {item:'Pamphlet (A5, 1000)',value:'₹800–1,500',note:'double side'},
+      {item:'Standee Print',value:'₹300–600',note:'6×2.5 ft, without stand'},
+    ],
+    ask:[
+      'What\'s your rate for [X] quantity -- do you give bulk discounts above 100/500 pieces?',
+      'What paper quality/GSM are you using? Can I see a sample?',
+      'What\'s your turnaround time? Can you do same-day or next-morning delivery?',
+      'Do you handle design, or do I need to send print-ready files?',
+      'What file format do you need -- PDF, CorelDraw, AI?',
+      'Is there a bleed/margin requirement I should know about?',
+    ],
+    checklist:[
+      'Print-ready files in the correct format (PDF preferred)',
+      'Bleed of at least 3mm on all sides',
+      'Written quote on WhatsApp before paying advance',
+      'Sample printout approved before full run',
+      'Contact number of the person handling your order',
+      'Delivery timeline confirmed in writing',
+    ],
+    flags:[
+      'No sample before full run -- walk away',
+      'Asks for 100% payment upfront',
+      'Vague about paper quality -- "standard quality" means cheap',
+      'Can\'t show you a previous similar job',
+      'No fixed delivery timeline, just "will do soon"',
+    ],
+    nego:[
+      'Get 3 quotes, then go back to your preferred shop with the lowest quote',
+      'Bulk is your best friend -- consolidate all your printing needs into one order',
+      'Offer to pay faster (same day) in exchange for a discount',
+      'Ask what they can throw in free -- laminates, a few extra copies, delivery',
+      'Visit in person rather than calling -- you\'ll always get a better rate face-to-face',
+    ],
+    tip:'Always get a physical sample approved before the full print run. A colour mismatch on 500 certificates the night before your fest is a nightmare no amount of jugaad can fix.',
+  },
+  {
+    id:'food', icon:'🍱', color:'#E53935', pale:'#FFEBEE',
+    name:'Food Stalls',
+    desc:'Whether you\'re feeding your volunteer team, setting up stalls for attendees, or sourcing a caterer for a gala dinner -- food logistics can make or break a fest.',
+    priceIntro:'Food pricing depends on menu complexity, headcount, and whether you want self-service or served. Always negotiate per-plate and ask for a tasting first.',
+    prices:[
+      {item:'Tea/Coffee (bulk)',value:'₹5–12',note:'per cup, 100+ orders'},
+      {item:'Snack Box (veg)',value:'₹50–120',note:'samosa, sandwich, juice'},
+      {item:'Thali Lunch (veg)',value:'₹80–180',note:'rice, dal, 2 sabzi, roti'},
+      {item:'Stall Setup (basic)',value:'₹500–2,000',note:'per day, without food cost'},
+      {item:'Caterer per head',value:'₹150–400',note:'full meal, depends on menu'},
+      {item:'Packaged Water (1L)',value:'₹12–18',note:'bulk case pricing'},
+    ],
+    ask:[
+      'Can we do a tasting before confirming the order?',
+      'What\'s your minimum order quantity?',
+      'Do you handle setup, serving, and cleanup -- or just supply the food?',
+      'What\'s your policy if attendance is lower/higher than expected?',
+      'Do you have an FSSAI license? (Required for public events)',
+      'Can you accommodate dietary restrictions (Jain, vegan, allergies)?',
+    ],
+    checklist:[
+      'FSSAI license number noted and verified',
+      'Tasting done and approved at least a week before',
+      'Headcount confirmed and shared with caterer 48 hours before',
+      'Payment terms agreed -- typically 30% advance, balance on delivery',
+      'Emergency contact for day-of issues',
+      'Backup plan if caterer cancels (know 2 caterers)',
+    ],
+    flags:[
+      'Refuses to do a tasting -- big red flag',
+      'No FSSAI license for a public-facing food stall',
+      'Asks for full payment before the event',
+      'Vague about ingredients or sourcing',
+      'Can\'t give you references from similar events',
+    ],
+    nego:[
+      'Higher headcount = lower per-plate rate -- always inflate estimate slightly when negotiating',
+      'Offer guaranteed repeat business next semester for a discount now',
+      'Cut costs by simplifying the menu -- fewer items, better execution',
+      'Ask what they\'ll add for free -- extra water, a dessert item, serving staff',
+      'Pay promptly after the event -- builds trust for next time',
+    ],
+    tip:'Always confirm headcount with the caterer 48 hours before the event, not just at booking. A caterer preparing for 200 people when 400 show up is the worst-case scenario.',
+  },
+  {
+    id:'trophies', icon:'🏆', color:'#F9A825', pale:'#FFFDE7',
+    name:'Medals & Trophies',
+    desc:'Wholesale trophy markets exist in every major city -- the trick is knowing where to go, what MOQs look like, and how to get custom engraving without paying retail.',
+    priceIntro:'Trophy and medal pricing drops significantly at wholesale markets compared to retail shops. Always buy from wholesale clusters -- every city has one.',
+    prices:[
+      {item:'Plastic Trophy (small)',value:'₹30–80',note:'unbranded, no engraving'},
+      {item:'Metal Trophy (medium)',value:'₹120–300',note:'with base'},
+      {item:'Custom Medal (zinc)',value:'₹25–60',note:'per piece, 50+ MOQ'},
+      {item:'Custom Medal (brass)',value:'₹80–180',note:'with ribbon, 50+ MOQ'},
+      {item:'Engraving (per piece)',value:'₹10–30',note:'laser, per line'},
+      {item:'Shield (acrylic)',value:'₹150–400',note:'with printing'},
+    ],
+    ask:[
+      'What\'s your minimum order quantity for custom medals?',
+      'Can I see a sample before placing the full order?',
+      'How long does engraving take -- can you do it in 48 hours?',
+      'Do you have a catalogue of finishes -- matte, gold, silver, antique?',
+      'What\'s the per-piece rate at 50, 100, 200 units?',
+      'Can you deliver, or do I need to pick up?',
+    ],
+    checklist:[
+      'Artwork/logo file in vector format (AI, EPS, SVG)',
+      'List of names/text for engraving -- proofread twice',
+      'Confirmed delivery date at least 5 days before event',
+      'Sample piece approved before full run',
+      'Counted and checked on delivery before paying balance',
+    ],
+    flags:[
+      'No sample before full order',
+      'Engraving done with a sticker, not laser -- peels off quickly',
+      'Vague delivery timelines -- "3-4 days" without a fixed date',
+      'Won\'t show you their workshop or production process',
+      'Retail shop posing as wholesale -- check price per unit carefully',
+    ],
+    nego:[
+      'Go to the wholesale market, not a mall trophy shop -- prices are 40-60% lower',
+      'Order all categories together (1st, 2nd, 3rd, participation) in one go for bulk rate',
+      'Bring competitor quotes -- wholesale suppliers will match or beat them',
+      'Ask for free delivery above a certain order value',
+      'Offer a review/referral to other college fests in exchange for a deal',
+    ],
+    tip:'In Delhi, Sadar Bazar. In Mumbai, Dharavi and Kurla. In Pune, Budhwar Peth. Every city has a trophy wholesale cluster -- ask a senior fest organiser where it is in yours.',
+  },
+  {
+    id:'stationery', icon:'✏️', color:'#43A047', pale:'#E8F5E9',
+    name:'Stationery Shops',
+    desc:'From registration desk pens to participant folders, lanyards to sticky notes -- stationery is boring until you\'re scrambling for it at 11pm before day one.',
+    priceIntro:'Buy in bulk from wholesale stationery markets, not retail chains. Prices at wholesale are 30-50% lower for the same products.',
+    prices:[
+      {item:'Pens (bulk box, 10)',value:'₹20–50',note:'Cello/Reynolds quality'},
+      {item:'A4 Ream (500 sheets)',value:'₹180–280',note:'70/75 GSM'},
+      {item:'Lanyards (plain)',value:'₹8–20',note:'per piece, 100+ MOQ'},
+      {item:'ID Card Holder',value:'₹5–15',note:'hard/soft, per piece'},
+      {item:'Sticky Notes (pad)',value:'₹15–40',note:'per pad, 100 sheets'},
+      {item:'Folder (presentation)',value:'₹20–60',note:'per piece, branded possible'},
+    ],
+    ask:[
+      'Do you have wholesale pricing for bulk orders above 100/500 pieces?',
+      'Can you do custom printing on lanyards or folders?',
+      'What\'s the lead time for custom printed items?',
+      'Do you stock branded pens/items or only unbranded?',
+      'Can I mix items into one order for a combined discount?',
+    ],
+    checklist:[
+      'Full stationery list made at least 2 weeks before fest',
+      'Quantities calculated with 20% buffer (always need more)',
+      'Custom items (lanyards, folders) ordered at least 10 days early',
+      'Stock confirmed with supplier 48 hours before pickup',
+      'Someone assigned to stationery logistics on fest day',
+    ],
+    flags:[
+      'Retail pricing disguised as bulk pricing -- compare per unit cost carefully',
+      'Custom items with very short turnaround and no sample',
+      'No stock confirmation before day of pickup',
+      'Substituting brands without asking you first',
+    ],
+    nego:[
+      'Consolidate your entire stationery list into one order -- more leverage',
+      'Compare the per-unit cost, not the total -- shops obfuscate this',
+      'Ask what slow-moving stock they want to clear -- sometimes great deals on branded items',
+      'Offer to buy their display stock for an immediate discount',
+      'College budgets are tight and shops know it -- just ask for student pricing directly',
+    ],
+    tip:'Make your stationery list before you do anything else. It\'s the most underestimated category -- and the one that causes the most chaos when you run out of lanyards at registration.',
+  },
+  {
+    id:'event-supplies', icon:'🎪', color:'#8E24AA', pale:'#F3E5F5',
+    name:'Event Supplies',
+    desc:'Chairs, tables, drapes, fairy lights, stages, décor, flowers -- the stuff that makes a venue look like a fest and not a college corridor.',
+    priceIntro:'Most event supplies are rented, not bought. Always go to a local event rental market rather than corporate event companies -- 60-70% cheaper.',
+    prices:[
+      {item:'Plastic Chair (rental)',value:'₹10–25',note:'per piece per day'},
+      {item:'Folding Table (rental)',value:'₹50–150',note:'per table per day'},
+      {item:'Stage (per sq ft)',value:'₹20–60',note:'basic wooden platform'},
+      {item:'Backdrop (fabric)',value:'₹200–600',note:'per panel, 8×10 ft'},
+      {item:'Fairy Lights (10m)',value:'₹80–200',note:'purchase price'},
+      {item:'Flower Decoration',value:'₹500–3,000',note:'per arrangement, varies wildly'},
+    ],
+    ask:[
+      'What\'s included in the rental -- delivery, setup, and pickup?',
+      'What\'s the damage deposit and what counts as damage?',
+      'Can you do a site visit to confirm what we need?',
+      'What\'s your cancellation policy?',
+      'Have you done college fests before -- can I see photos?',
+      'What time does delivery happen and what time do you collect?',
+    ],
+    checklist:[
+      'Venue dimensions measured before ordering furniture counts',
+      'Delivery and collection times confirmed and matching your access window',
+      'Damage deposit terms understood and agreed in writing',
+      'Backup plan for weather (outdoor events)',
+      'Electrical load checked before ordering lots of lights',
+      'Person assigned to receive delivery on the day',
+    ],
+    flags:[
+      'No site visit offered for large orders -- they\'re guessing quantities',
+      'Damage deposit with vague terms -- get it in writing',
+      'Same-day delivery promised without confirmation the night before',
+      'Stage setup without a safety check or weight rating',
+      'Flower/décor without seeing real samples (photos on phones lie)',
+    ],
+    nego:[
+      'Rent everything from one vendor for a package discount',
+      'Off-peak fests (weekdays, non-exam season) get better rates',
+      'Offer to tag them on social media -- surprisingly effective for small vendors',
+      'Ask what they have overstocked -- sometimes you get great items cheap',
+      'Multi-day events are better value -- push for a flat rate across days',
+    ],
+    tip:'Always do a walkthrough of the venue with your rental vendor before finalising quantities. What looks right on a floor plan is often wrong in reality.',
+  },
+  {
+    id:'flex', icon:'🖼️', color:'#00897B', pale:'#E0F2F1',
+    name:'Flex & Banner Printing',
+    desc:'Stage backdrops, hoardings, standees, gate arches -- flex printing is the fastest-moving item before any fest. Know your sizes, materials, and turnaround times.',
+    priceIntro:'Flex printing is priced per square foot. Rates vary by material (vinyl vs solvent vs eco-solvent) and urgency. Always confirm material before printing.',
+    prices:[
+      {item:'Flex Banner (per sq ft)',value:'₹12–25',note:'standard 13oz vinyl'},
+      {item:'Star Flex (per sq ft)',value:'₹18–35',note:'backlit, premium'},
+      {item:'Standee Print',value:'₹250–500',note:'6×2.5 ft, print only'},
+      {item:'Gate Arch (large)',value:'₹800–2,500',note:'depends on size'},
+      {item:'Backdrop (stage, 20ft)',value:'₹600–1,800',note:'with grommets'},
+      {item:'Eyelets/Grommets',value:'₹2–5',note:'per eyelet, ask for this'},
+    ],
+    ask:[
+      'What material are you using -- 13oz vinyl, star flex, or something else?',
+      'Do you do grommets/eyelets included in the price?',
+      'What\'s the resolution -- minimum 72 DPI for viewing distance?',
+      'What\'s your file format requirement -- CorelDraw, AI, PDF?',
+      'What\'s your turnaround for urgent same-day or next-morning orders?',
+      'Do you do installation/hanging, or just print?',
+    ],
+    checklist:[
+      'Artwork file at correct dimensions and resolution (add bleed)',
+      'Dimensions double-checked against actual venue measurements',
+      'File format confirmed with shop before finalising design',
+      'Colour proof approved before full print run',
+      'Grommets/eyelets specified in the order',
+      'Pickup/delivery time locked in',
+    ],
+    flags:[
+      'Print shop that can\'t tell you what material they\'re using',
+      'No colour proof before printing -- "it\'ll look fine"',
+      'Charging extra for grommets without telling you upfront',
+      'Turnaround too fast without seeing the machine in-shop',
+      'Low resolution output -- ask for a test strip before full print',
+    ],
+    nego:[
+      'Order all your flex requirements together -- backdrop + standees + banners',
+      'Flex shops near college areas often give student rates -- ask directly',
+      'Bring artwork fully ready -- they charge extra for design, you save that',
+      'Regular semester orders = loyalty discount, ask for it upfront',
+      'Urgency charges are negotiable if you\'re flexible about exact pickup time',
+    ],
+    tip:'Add at least 2 inches of bleed to all sides of your flex artwork. A cropped design on a 20-foot stage backdrop, the day before your fest, is irreversible.',
+  },
+  {
+    id:'photographers', icon:'📸', color:'#FF6B00', pale:'#FFF3E8',
+    name:'Photographers & Studios',
+    desc:'Every fest needs coverage. But not every photographer who says they\'ve shot events has done a 2,000-person outdoor fest. Here\'s how to tell the difference.',
+    priceIntro:'College fest photography is priced by duration, deliverables, and whether you need video/reels too. Always see a real portfolio, not a curated highlight reel.',
+    prices:[
+      {item:'Half-day Photography',value:'₹2,000–6,000',note:'4 hours, 1 photographer'},
+      {item:'Full-day Photography',value:'₹4,000–12,000',note:'8 hours, 1 photographer'},
+      {item:'Reel/Video Coverage',value:'₹3,000–15,000',note:'per day, edited deliverable'},
+      {item:'Photo Editing (per 100)',value:'₹500–2,000',note:'basic correction'},
+      {item:'Photo Booth Setup',value:'₹3,000–8,000',note:'with props and prints'},
+      {item:'Drone Shot (per hour)',value:'₹2,000–8,000',note:'requires permissions'},
+    ],
+    ask:[
+      'Can you show me full galleries from college events you\'ve shot -- not just highlight posts?',
+      'How many edited photos will I receive, and in how many days?',
+      'Do you shoot RAW, and do I get the RAW files too?',
+      'Who specifically is covering our event -- you or a junior from your team?',
+      'What equipment will you bring -- backup camera, lenses, flash?',
+      'What happens if you cancel day-of?',
+    ],
+    checklist:[
+      'Full gallery from a previous college event reviewed (not just Instagram)',
+      'Exact deliverables agreed in writing: number of photos, edited, timeline',
+      'Shot list shared with photographer before the event',
+      'Contact number of the photographer (not just the studio)',
+      'Advance paid and receipt taken',
+      'Backup photographer option discussed',
+    ],
+    flags:[
+      'Only shows curated Instagram posts, won\'t share a full gallery',
+      'Different photographer shows up than who you met',
+      'Vague on delivery timeline -- "a few days" means weeks',
+      'No backup equipment for a multi-day event',
+      'Asks for 100% payment before the event',
+      'Drone without proper permissions -- you\'re liable',
+    ],
+    nego:[
+      'Package photo + video together -- always cheaper than booking separately',
+      'Offer prominent credit on all social media posts, banners, and brochures',
+      'Student photographers from your own college design or media team = low cost + high enthusiasm',
+      'Multi-day discount -- a 3-day fest should cost less than 3× a single day',
+      'Off-season bookings (summer fests) get better rates than December/February peak',
+    ],
+    tip:'Always give photographers a shot list. "Cover everything" leads to 800 photos of the auditorium ceiling. A good shot list gets you what you actually need for your socials and memories.',
+  },
+  {
+    id:'tailors', icon:'🧵', color:'#D81B60', pale:'#FCE4EC',
+    name:'Tailors & Costume Makers',
+    desc:'Volunteer tees, cultural fest costumes, sashes, caps -- custom stitching is a fast-turnaround game. Know what\'s possible in 48 hours and what isn\'t.',
+    priceIntro:'Pricing depends heavily on quantity, complexity, and fabric. Simple tees with print are cheapest; custom stitched costumes are a different category entirely.',
+    prices:[
+      {item:'Custom T-shirt (printed)',value:'₹120–280',note:'per piece, 30+ MOQ'},
+      {item:'Sash (printed ribbon)',value:'₹30–80',note:'per piece'},
+      {item:'Cultural Costume (stitched)',value:'₹300–1,500',note:'per piece, varies wildly'},
+      {item:'Alterations (basic)',value:'₹50–200',note:'per garment'},
+      {item:'Embroidery (per logo)',value:'₹80–250',note:'depends on size/complexity'},
+      {item:'Cape/Drape (custom)',value:'₹150–400',note:'per piece'},
+    ],
+    ask:[
+      'What\'s your minimum order quantity for custom printed tees?',
+      'Can I see samples of your printing quality -- screen print vs digital?',
+      'What\'s your turnaround time for 50 tees? For 200?',
+      'Do you provide fabric or should I supply it?',
+      'Can you do last-minute alterations on the day of the event?',
+      'Do you have experience with cultural costume making specifically?',
+    ],
+    checklist:[
+      'Size chart collected from all volunteers/team members',
+      'Design finalised and print-ready before approaching tailor',
+      'Sample tee approved before full run',
+      'Delivery date set at least 5 days before the event',
+      'Fitting session booked if costumes are custom stitched',
+      'Alteration allowance built into the budget',
+    ],
+    flags:[
+      'No sample before full run -- especially for custom tees',
+      'Tailor who\'s never done bulk orders before',
+      'Fabric quality not confirmed upfront -- ask to feel the actual material',
+      'No size measurement process -- sizing by "standard S/M/L" for 100+ people fails',
+      'Extremely short turnaround with no rush premium disclosed',
+    ],
+    nego:[
+      'Screen printing is cheaper than digital for large quantities -- ask about it',
+      'Consistent orders every semester build loyalty and lower prices over time',
+      'Supply your own fabric for stitching -- tailor charges less for labour only',
+      'Group orders from multiple college events with the same tailor = bulk deal',
+      'Negotiate free minor alterations post-delivery as part of the deal',
+    ],
+    tip:'Order tees and costumes at least 2 weeks before your fest. A tailor who promises 3-day delivery for 200 custom tees is either lying or cutting corners on quality.',
+  },
+  {
+    id:'sound', icon:'🎤', color:'#3949AB', pale:'#E8EAF6',
+    name:'Sound & AV Rentals',
+    desc:'Bad sound ruins events. Good sound makes them. This category has the highest potential for day-of disaster -- and also the clearest set of questions that prevent it.',
+    priceIntro:'Sound and AV pricing depends on venue size, duration, and whether you need an operator. Always insist on an operator being included -- never run sound yourself.',
+    prices:[
+      {item:'PA System (small hall)',value:'₹3,000–8,000',note:'per day, with operator'},
+      {item:'PA System (outdoor, large)',value:'₹10,000–35,000',note:'per day, depends on wattage'},
+      {item:'Projector (HD)',value:'₹1,500–4,000',note:'per day, no screen'},
+      {item:'LED Wall (per sq ft)',value:'₹800–2,000',note:'per day'},
+      {item:'Wireless Mics (pair)',value:'₹500–1,500',note:'per day'},
+      {item:'DJ Setup (basic)',value:'₹4,000–12,000',note:'per day, with equipment'},
+    ],
+    ask:[
+      'Is an operator included, or is this equipment-only rental?',
+      'What\'s the wattage of the system -- is it suitable for [venue + expected crowd]?',
+      'When do you arrive for setup and soundcheck?',
+      'What\'s your policy if equipment fails mid-event?',
+      'Do you have backup equipment on-site?',
+      'Is the DJ setup compatible with our artists\' riders?',
+    ],
+    checklist:[
+      'Venue size and expected attendance shared with vendor for correct system sizing',
+      'Soundcheck scheduled at least 2 hours before the event starts',
+      'Operator contact number saved and briefed on the run-of-show',
+      'Power supply and load requirements confirmed with venue',
+      'Backup mic and cable available',
+      'Contract/agreement with equipment liability terms signed',
+    ],
+    flags:[
+      'No operator included -- "you can run it yourself" is a disaster waiting',
+      'Wattage not specified -- size matters enormously for outdoors',
+      'No backup equipment offered for a multi-hour event',
+      'Setup time that clashes with your event start',
+      'No prior experience with college/outdoor events specifically',
+      'Verbal-only agreement with no written confirmation',
+    ],
+    nego:[
+      'Full-day rate vs hourly -- always negotiate a full-day flat rate',
+      'Bundle sound + lights + projector from one vendor for package pricing',
+      'Student union / fest committee status sometimes gets institutional discounts',
+      'Off-peak weekday events get better rates than Friday/Saturday',
+      'Offer guaranteed future business for this semester\'s deal',
+    ],
+    tip:'Bad sound is the one thing attendees remember above everything else -- more than the décor, the food, even the performances. Don\'t cut this budget. Cut décor first.',
+  },
+  {
+    id:'transport', icon:'🚐', color:'#6D4C41', pale:'#EFEBE9',
+    name:'Transport',
+    desc:'Moving equipment, supplies, performers, and people -- transport logistics are invisible when they work and catastrophic when they don\'t.',
+    priceIntro:'Tempo and vehicle pricing depends on size, distance, and whether you need loading/unloading help. Always book with 24 hours buffer for supply runs.',
+    prices:[
+      {item:'Tempo Traveller (12-14 seater)',value:'₹2,500–5,000',note:'per day, within city'},
+      {item:'Tata Ace (small tempo)',value:'₹800–1,800',note:'per trip, within city'},
+      {item:'407 Truck (bulk goods)',value:'₹2,000–5,000',note:'per trip, depends on load'},
+      {item:'Auto (per hour)',value:'₹100–200',note:'for quick runs'},
+      {item:'Porter/Loading help',value:'₹300–700',note:'per person per day'},
+      {item:'Bus (40-seater, full day)',value:'₹6,000–15,000',note:'college group transport'},
+    ],
+    ask:[
+      'Do you have experience with event logistics -- not just regular transport?',
+      'Is loading/unloading help included, or extra?',
+      'What\'s your policy if the vehicle breaks down mid-route?',
+      'Can you do multiple trips in one booking?',
+      'What\'s the overtime rate if we run late?',
+      'Do you have the right vehicle permit for goods transport?',
+    ],
+    checklist:[
+      'Vehicle size confirmed against actual load/passenger count',
+      'Driver contact saved and briefed on all pickup/drop points',
+      'Loading and unloading time factored into the schedule',
+      'Multiple trips mapped if single vehicle isn\'t enough',
+      'Fuel and toll costs confirmed to be included in rate',
+      'Backup transport option identified for performer pickups',
+    ],
+    flags:[
+      'No goods permit for a tempo carrying equipment -- legal liability on you',
+      'Driver not reachable the night before -- confirm always',
+      'Overtime not discussed -- you\'ll be charged surprise amounts',
+      'Vehicle size doesn\'t match actual load -- they\'ll refuse overloading',
+      'Loading/unloading charges sprung on you at delivery',
+    ],
+    nego:[
+      'Full-day booking is always cheaper than per-trip for multi-run days',
+      'Local transporters near your college know the area -- better and cheaper',
+      'Group performer pickups into one vehicle run, not individual cabs',
+      'Confirm total rate includes fuel and tolls -- "extra" is a trap',
+      'Semester-long relationship with one transporter = first priority and lower rates',
+    ],
+    tip:'Always have a backup transport contact for performer and guest pickups. A no-show cab the morning of is the single most avoidable crisis in fest organising -- and one of the most common.',
+  },
+];
+
+let activeCat = null;
+let activeTab = 'prices';
+
+function render() {
+  const grid = document.getElementById('selector-grid');
+  grid.innerHTML = CATS.map(c => `
+    <button class="sel-btn${activeCat===c.id?' active':''}"
+      style="--cat-color:${c.color}"
+      onclick="selectCat('${c.id}')">
+      <span class="sel-icon">${c.icon}</span>
+      <span class="sel-label">${c.name}</span>
+    </button>
+  `).join('');
+
+  const panel = document.getElementById('main-panel');
+  const empty = document.getElementById('empty-state');
+
+  if (!activeCat) {
+    panel.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+  panel.style.display = 'block';
+
+  const cat = CATS.find(c => c.id === activeCat);
+
+  const tabs = ['prices','ask','checklist','flags','nego'];
+  const tabLabels = {prices:'Price Guide',ask:'Ask the Vendor',checklist:'Checklist',flags:'Red Flags',nego:'Negotiation'};
+
+  const pricesHTML = `
+    <p class="price-intro">${cat.priceIntro}</p>
+    <div class="price-grid">
+      ${cat.prices.map(p=>`
+        <div class="price-card">
+          <div class="price-item-name">${p.item}</div>
+          <div class="price-value" style="color:${cat.color}">${p.value}</div>
+          <div class="price-note">${p.note}</div>
+        </div>
+      `).join('')}
+    </div>`;
+
+  const askHTML = `<ul class="guide-list">${cat.ask.map(q=>`
+    <li><span class="list-marker marker-ask">?</span><span>${q}</span></li>`).join('')}</ul>`;
+
+  const checklistHTML = `<ul class="guide-list">${cat.checklist.map(q=>`
+    <li><span class="list-marker marker-check">✓</span><span>${q}</span></li>`).join('')}</ul>`;
+
+  const flagsHTML = `<ul class="guide-list">${cat.flags.map(q=>`
+    <li><span class="list-marker marker-flag">!</span><span>${q}</span></li>`).join('')}</ul>`;
+
+  const negoHTML = `
+    <ul class="guide-list">${cat.nego.map(q=>`
+    <li><span class="list-marker marker-nego">→</span><span>${q}</span></li>`).join('')}</ul>
+    <div class="tip-box"><strong>Jugaad tip:</strong> ${cat.tip}</div>`;
+
+  const tabContents = {prices:pricesHTML, ask:askHTML, checklist:checklistHTML, flags:flagsHTML, nego:negoHTML};
+
+  panel.innerHTML = `
+    <div class="panel-hero" style="background:linear-gradient(120deg,${cat.pale} 0%,var(--white) 70%)">
+      <div class="panel-icon-wrap" style="background:${cat.color}">${cat.icon}</div>
+      <div class="panel-title-wrap">
+        <div class="panel-cat-label" style="color:${cat.color}">${cat.name}</div>
+        <div class="panel-title">${cat.name} Guide</div>
+        <div class="panel-desc">${cat.desc}</div>
+      </div>
+    </div>
+    <div class="panel-tabs">
+      ${tabs.map(t=>`
+        <button class="tab-btn${activeTab===t?' active':''}"
+          style="${activeTab===t?`color:${cat.color};border-bottom-color:${cat.color}`:''}"
+          onclick="switchTab('${t}')">
+          ${tabLabels[t]}
+        </button>`).join('')}
+    </div>
+    ${tabs.map(t=>`
+      <div class="tab-content${activeTab===t?' active':''}" id="tab-${t}">
+        ${tabContents[t]}
+      </div>`).join('')}
+  `;
+
+  // scroll panel into view smoothly
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function selectCat(id) {
+  if (activeCat === id) { activeCat = null; }
+  else { activeCat = id; activeTab = 'prices'; }
+  render();
+}
+
+function switchTab(tab) {
+  activeTab = tab;
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
