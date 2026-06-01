@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jugaad -- Your College Budget Kit</title>
+  <meta name="description" content="The crowdsourced map for college fest organisers. Find cheap printers, food stalls, trophies, banners and more across Delhi, Kolkata, Pune, Bengaluru and Manipal."/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --orange:#FF6B00;--orange-light:#FF8C38;--orange-pale:#FFF3E8;
+      --yellow:#FFD012;--yellow-pale:#FFFBE6;
+      --dark:#1A1200;--dark-2:#2E2200;--mid:#6B5000;--muted:#A07820;
+      --surface:#FFFDF7;--surface-2:#FFF8EC;--border:#FFE4B0;--white:#FFFFFF;
+      --radius:16px;--radius-sm:10px;
+      --shadow:0 4px 24px rgba(255,107,0,0.10);--shadow-lg:0 8px 40px rgba(255,107,0,0.18);
+    }
+    html,body{font-family:'Poppins',sans-serif;background:var(--surface);color:var(--dark);-webkit-font-smoothing:antialiased;}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:62px;background:rgba(255,253,247,0.94);backdrop-filter:blur(14px);border-bottom:1.5px solid var(--border);}
+    .nav-logo{font-size:22px;font-weight:900;color:var(--orange);letter-spacing:-0.5px;text-decoration:none;}
+    .nav-logo span{color:var(--dark);}
+    .nav-links{display:flex;gap:28px;align-items:center;}
+    .nav-links a{font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;transition:color 0.15s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--orange);}
+    .nav-right{display:flex;gap:10px;align-items:center;}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:100px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.18s ease;text-decoration:none;white-space:nowrap;line-height:1;}
+    .btn-primary{background:var(--orange);color:#fff;}
+    .btn-primary:hover{background:var(--orange-light);transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,107,0,0.3);}
+    .btn-yellow{background:var(--yellow);color:var(--dark-2);}
+    .btn-yellow:hover{background:#ffe033;transform:translateY(-1px);}
+    .btn-sm{padding:6px 14px;font-size:12px;}
+
+    /* HERO */
+    .hero{position:relative;height:100vh;min-height:560px;overflow:hidden;display:flex;align-items:flex-end;}
+    .carousel-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1s ease;}
+    .carousel-slide.active{opacity:1;}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,12,0,0.88) 0%,rgba(26,12,0,0.4) 45%,rgba(26,12,0,0.1) 100%);z-index:1;}
+    .hero-content{position:relative;z-index:2;padding:0 32px 60px;width:100%;max-width:780px;}
+    .hero-badge{display:inline-block;background:var(--yellow);color:var(--dark-2);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 14px;border-radius:100px;margin-bottom:18px;}
+    .hero h1{font-size:clamp(38px,7vw,74px);font-weight:900;color:#fff;line-height:1.03;letter-spacing:-2.5px;margin-bottom:14px;}
+    .hero h1 span{color:var(--yellow);}
+    .hero p{font-size:16px;color:rgba(255,255,255,0.7);max-width:460px;line-height:1.75;margin-bottom:30px;}
+    .hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+    .carousel-dots{position:absolute;bottom:22px;right:32px;z-index:3;display:flex;gap:6px;}
+    .dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,0.35);transition:all 0.3s;cursor:pointer;border:none;}
+    .dot.active{background:var(--yellow);width:22px;}
+
+    /* CITY STRIP */
+    .city-strip{display:flex;background:var(--dark);overflow-x:auto;scrollbar-width:none;}
+    .city-strip::-webkit-scrollbar{display:none;}
+    .city-tab{flex:1;min-width:90px;padding:14px 8px;text-align:center;font-size:12px;font-weight:700;color:rgba(255,255,255,0.38);cursor:pointer;transition:all 0.2s;border:none;background:none;font-family:'Poppins',sans-serif;border-bottom:2.5px solid transparent;white-space:nowrap;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px;}
+    .city-tab:hover{color:rgba(255,255,255,0.7);}
+    .city-tab.active{color:var(--yellow);border-bottom-color:var(--yellow);}
+    .city-emoji{font-size:18px;}
+
+    /* STATS */
+    .stats-bar{background:var(--orange);padding:20px 28px;display:flex;justify-content:center;gap:52px;flex-wrap:wrap;}
+    .stat{text-align:center;}
+    .stat-num{font-size:28px;font-weight:900;color:#fff;line-height:1;}
+    .stat-label{font-size:11px;color:rgba(255,255,255,0.72);font-weight:600;margin-top:2px;}
+
+    /* HOW IT WORKS */
+    .how-section{padding:88px 28px;max-width:960px;margin:0 auto;}
+    .section-header{margin-bottom:52px;}
+    .section-eyebrow{display:inline-block;background:var(--yellow);color:var(--dark-2);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 14px;border-radius:100px;margin-bottom:14px;}
+    .section-header h2{font-size:clamp(26px,4vw,40px);font-weight:900;color:var(--dark);letter-spacing:-1.5px;margin-top:10px;line-height:1.1;}
+    .section-header p{font-size:14px;color:var(--mid);margin-top:10px;max-width:400px;line-height:1.75;}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;}
+    .step{display:flex;flex-direction:column;gap:14px;}
+    .step-num{width:46px;height:46px;border-radius:13px;background:var(--dark);color:var(--yellow);font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+    .step h3{font-size:16px;font-weight:800;color:var(--dark);}
+    .step p{font-size:13px;color:var(--mid);line-height:1.75;}
+
+    /* CATEGORIES */
+    .cats-section{background:var(--surface-2);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border);padding:88px 28px;}
+    .cats-inner{max-width:960px;margin:0 auto;}
+    .cats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px;margin-top:44px;}
+    .cat-card-home{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px 16px;text-decoration:none;display:flex;flex-direction:column;gap:8px;transition:all 0.2s;position:relative;overflow:hidden;}
+    .cat-card-home::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--cat-c,var(--orange));}
+    .cat-card-home:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--cat-c,var(--orange));}
+    .cat-card-icon{font-size:28px;}
+    .cat-card-name{font-size:13px;font-weight:700;color:var(--dark);line-height:1.3;}
+    .cat-card-arrow{font-size:12px;color:var(--muted);margin-top:auto;}
+
+    /* MOSAIC */
+    .mosaic-section{padding:88px 28px;max-width:960px;margin:0 auto;}
+    .mosaic{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:230px 230px;gap:10px;margin-top:44px;border-radius:var(--radius);overflow:hidden;}
+    .mosaic-item{overflow:hidden;}
+    .mosaic-item:nth-child(1){grid-row:1/3;}
+    .mosaic-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease;}
+    .mosaic-item:hover .mosaic-img{transform:scale(1.05);}
+    .mosaic-caption{margin-top:12px;font-size:12px;color:var(--muted);text-align:center;font-style:italic;}
+
+    /* CITY CARDS */
+    .city-section{padding:0 28px 88px;max-width:960px;margin:0 auto;}
+    .city-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:44px;}
+    .city-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:26px 16px;text-align:center;cursor:pointer;transition:all 0.2s;text-decoration:none;}
+    .city-card:hover{border-color:var(--orange);background:var(--orange-pale);transform:translateY(-2px);}
+    .city-card-icon{font-size:32px;margin-bottom:10px;}
+    .city-card-name{font-size:14px;font-weight:800;color:var(--dark);margin-bottom:5px;}
+    .city-card-count{font-size:11px;color:var(--muted);}
+
+    /* CTA BANNER */
+    .cta-banner{margin:0 28px 88px;border-radius:var(--radius);background:var(--dark);padding:56px 44px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;}
+    .cta-banner h2{font-size:clamp(22px,3.5vw,36px);font-weight:900;color:#fff;letter-spacing:-1px;max-width:400px;line-height:1.2;}
+    .cta-banner h2 span{color:var(--yellow);}
+    .cta-banner p{font-size:13px;color:rgba(255,255,255,0.45);margin-top:8px;}
+    .cta-banner-btns{display:flex;gap:12px;flex-wrap:wrap;flex-shrink:0;}
+
+    /* FOOTER */
+    footer{background:var(--dark);color:rgba(255,255,255,0.55);padding:36px 28px;text-align:center;font-size:13px;}
+    .footer-logo{font-size:24px;font-weight:900;color:var(--orange);margin-bottom:6px;letter-spacing:-0.5px;}
+    .footer-logo span{color:rgba(255,255,255,0.8);}
+    .footer-tagline{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:16px;}
+    .footer-links{display:flex;justify-content:center;gap:24px;margin-bottom:20px;flex-wrap:wrap;}
+    .footer-links a{color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;font-weight:500;transition:color 0.15s;}
+    .footer-links a:hover{color:var(--orange-light);}
+    .footer-cities{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+    .footer-city{font-size:11px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4);padding:3px 12px;border-radius:100px;}
+    .footer-copy{font-size:11px;color:rgba(255,255,255,0.25);}
+    .footer-name{color:var(--yellow);font-weight:700;}
+
+    @media(max-width:700px){
+      .steps{grid-template-columns:1fr;}
+      .city-cards{grid-template-columns:repeat(3,1fr);}
+      .mosaic{grid-template-columns:1fr 1fr;grid-template-rows:180px 180px 180px;}
+      .mosaic-item:nth-child(1){grid-row:1;grid-column:1/3;}
+      .cta-banner{padding:36px 24px;}
+      .hero-content{padding:0 20px 48px;}
+    }
+    @media(max-width:480px){
+      nav{padding:0 18px;}
+      .nav-links{display:none;}
+      .city-cards{grid-template-columns:repeat(2,1fr);}
+      .cats-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}
+      .mosaic{display:flex;flex-direction:column;}
+      .mosaic-item{height:200px;}
+      .stats-bar{gap:24px;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html"><span>जु</span>gaad</a>
+  <div class="nav-links">
+    <a href="explore.html">Explore</a>
+    <a href="categories/index.html">Library</a>
+    <a href="submit.html">Submit a Spot</a>
+  </div>
+  <div class="nav-right">
+    <a class="btn btn-primary btn-sm" href="explore.html">Find Jugaad</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="carousel-slide active" style="background-image:url('images/fest1.jpg')"></div>
+  <div class="carousel-slide" style="background-image:url('images/fest2.jpg')"></div>
+  <div class="carousel-slide" style="background-image:url('images/market1.jpg')"></div>
+  <div class="carousel-slide" style="background-image:url('images/fest3.jpg')"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Delhi · Kolkata · Pune · Bengaluru · Manipal</div>
+    <h1>Your college<br/><span>budget kit.</span></h1>
+    <p>All the spots you wish someone had told you about before your first fest. Crowdsourced by organisers, for organisers.</p>
+    <div class="hero-btns">
+      <a class="btn btn-yellow" href="explore.html">Find Jugaad Near You</a>
+      <a class="btn" style="background:rgba(255,255,255,0.15);color:#fff;backdrop-filter:blur(8px);" href="submit.html">Submit your Jugaad</a>
+    </div>
+  </div>
+  <div class="carousel-dots" id="carousel-dots"></div>
+</section>
+
+<div class="city-strip">
+  <a class="city-tab active" href="explore.html?city=Delhi"><span class="city-emoji">🏛️</span>Delhi</a>
+  <a class="city-tab" href="explore.html?city=Kolkata"><span class="city-emoji">🌸</span>Kolkata</a>
+  <a class="city-tab" href="explore.html?city=Pune"><span class="city-emoji">🎓</span>Pune</a>
+  <a class="city-tab" href="explore.html?city=Bengaluru"><span class="city-emoji">🌿</span>Bengaluru</a>
+  <a class="city-tab" href="explore.html?city=Manipal"><span class="city-emoji">🌊</span>Manipal</a>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num" id="stat-spots">--</div><div class="stat-label">Spots on the map</div></div>
+  <div class="stat"><div class="stat-num">5</div><div class="stat-label">Cities covered</div></div>
+  <div class="stat"><div class="stat-num">10</div><div class="stat-label">Categories</div></div>
+  <div class="stat"><div class="stat-num">Rs. 0</div><div class="stat-label">Cost to use</div></div>
+</div>
+
+<section class="how-section">
+  <div class="section-header">
+    <div class="section-eyebrow">How it works</div>
+    <h2>Three steps to your<br/>best-run fest yet</h2>
+    <p>No sponsored listings. No gatekeeping. Just real spots from people who have actually been there.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Pick your city</h3>
+      <p>We cover Delhi, Kolkata, Pune, Bengaluru, and Manipal. Filter by your college town and see every approved spot on the map.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Find what you need</h3>
+      <p>Filter by category -- printers, food stalls, trophies, flex banners, photographers and more. Every spot has tips from whoever submitted it.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Pay it forward</h3>
+      <p>Found a hidden gem? Submit it. Every spot gets reviewed before going live so the map stays trustworthy for the next organiser.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cats-section">
+  <div class="cats-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">The Jugaad Library</div>
+      <h2>Know before you spend<br/>a single rupee</h2>
+      <p>Price ranges, what to ask vendors, red flags, checklists -- one guide per category.</p>
+    </div>
+    <div class="cats-grid">
+      <a class="cat-card-home" href="categories/index.html" style="--cat-c:#1E88E5"><div class="cat-card-icon">🖨️</div><div class="cat-card-name">Cheap Printers</div><div class="cat-card-arrow">Read guide</div></a>
+      <a class="cat-card-home" href="categories/index.html" style="--cat-c:#E53935"><div class="cat-card-icon">🍱</div><div class="cat-card-name">Food Stalls</div><div class="cat-card-arrow">Read guide</div></a>
+      <a class="cat-card-home" href="categories/index.html" style="--cat-c:#F9A825"><div class="cat-card-icon">🏆</div><div class="cat-card-name">Medals & Trophies</div><div class="cat-card-arrow">Read guide</div></a>
+      <a class="cat-card-home" href="categories/index.html" style="--cat-c:#43A047"><div class="cat-card-icon">✏️</div><div class="cat-card-name">Stationery Shops</div><div class="cat-card-arrow">Read guide</div></a>
+      <a class="cat-card-home" href="categories/index.html" style="--cat-c:#8E24AA"><div class="cat-card-icon">🎪</div><div class="cat-card-name">Event Supplies</div><div class="cat-card-arrow">Read guide</div></a>
+      <a class="cat-card-home" href="categories/index.html" style="--cat-c:#00897B"><div class="cat-card-icon">🖼️</div><div class="cat-card-name">Flex & Banners</div><div class="cat-card-arrow">Read guide</div></a>
+      <a class="cat-card-home" href="categories/index.html" style="--cat-c:#FF6B00"><div class="cat-card-icon">📸</div><div class="cat-card-name">Photographers</div><div class="cat-card-arrow">Read guide</div></a>
+      <a class="cat-card-home" href="categories/index.html" style="--cat-c:#D81B60"><div class="cat-card-icon">🧵</div><div class="cat-card-name">Tailors & Costumes</div><div class="cat-card-arrow">Read guide</div></a>
+      <a class="cat-card-home" href="categories/index.html" style="--cat-c:#3949AB"><div class="cat-card-icon">🎤</div><div class="cat-card-name">Sound & AV</div><div class="cat-card-arrow">Read guide</div></a>
+      <a class="cat-card-home" href="categories/index.html" style="--cat-c:#6D4C41"><div class="cat-card-icon">🚐</div><div class="cat-card-name">Transport</div><div class="cat-card-arrow">Read guide</div></a>
+    </div>
+  </div>
+</section>
+
+<section class="mosaic-section">
+  <div class="section-header">
+    <div class="section-eyebrow">Real fests. Real jugaad.</div>
+    <h2>Built by organisers,<br/>for organisers</h2>
+    <p>From art stalls in Delhi to massive outdoor concerts -- this is what Indian college fests actually look like.</p>
+  </div>
+  <div class="mosaic">
+    <div class="mosaic-item"><img class="mosaic-img" src="images/fest3.jpg" alt="College fest crowd"/></div>
+    <div class="mosaic-item"><img class="mosaic-img" src="images/fest1.jpg" alt="Art stall at college fest"/></div>
+    <div class="mosaic-item"><img class="mosaic-img" src="images/market1.jpg" alt="Street market"/></div>
+    <div class="mosaic-item"><img class="mosaic-img" src="images/fest2.jpg" alt="Students at college"/></div>
+    <div class="mosaic-item"><img class="mosaic-img" src="images/fest1.jpg" alt="College event stall"/></div>
+  </div>
+  <p class="mosaic-caption">Spotted across India -- submit your own jugaad to the map</p>
+</section>
+
+<section class="city-section">
+  <div class="section-header">
+    <div class="section-eyebrow">5 Cities</div>
+    <h2>Where Jugaad lives</h2>
+    <p>Starting with the cities with the biggest fest cultures in India. More coming soon.</p>
+  </div>
+  <div class="city-cards">
+    <a class="city-card" href="explore.html?city=Delhi"><div class="city-card-icon">🏛️</div><div class="city-card-name">Delhi</div><div class="city-card-count" id="count-Delhi">--</div></a>
+    <a class="city-card" href="explore.html?city=Kolkata"><div class="city-card-icon">🌸</div><div class="city-card-name">Kolkata</div><div class="city-card-count" id="count-Kolkata">--</div></a>
+    <a class="city-card" href="explore.html?city=Pune"><div class="city-card-icon">🎓</div><div class="city-card-name">Pune</div><div class="city-card-count" id="count-Pune">--</div></a>
+    <a class="city-card" href="explore.html?city=Bengaluru"><div class="city-card-icon">🌿</div><div class="city-card-name">Bengaluru</div><div class="city-card-count" id="count-Bengaluru">--</div></a>
+    <a class="city-card" href="explore.html?city=Manipal"><div class="city-card-icon">🌊</div><div class="city-card-name">Manipal</div><div class="city-card-count" id="count-Manipal">--</div></a>
+  </div>
+</section>
+
+<div class="cta-banner">
+  <div>
+    <h2>Know a spot that belongs<br/>on the <span>map?</span></h2>
+    <p>Takes 2 minutes. Helps every organiser after you.</p>
+  </div>
+  <div class="cta-banner-btns">
+    <a class="btn btn-yellow" href="submit.html">Submit your Jugaad</a>
+    <a class="btn" style="color:#fff;border:1.5px solid rgba(255,255,255,0.2);background:transparent;" href="categories/index.html">Read the Library</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo"><span>जु</span>gaad</div>
+  <div class="footer-tagline">Your college budget kit · Crowdsourced by students</div>
+  <div class="footer-links">
+    <a href="explore.html">Explore</a>
+    <a href="categories/index.html">Library</a>
+    <a href="submit.html">Submit a Spot</a>
+    <a href="https://www.instagram.com/YOUR_HANDLE" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.linkedin.com/in/YOUR_HANDLE" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+  <div class="footer-cities">
+    <span class="footer-city">Delhi</span><span class="footer-city">Kolkata</span><span class="footer-city">Pune</span><span class="footer-city">Bengaluru</span><span class="footer-city">Manipal</span>
+  </div>
+  <div class="footer-copy">Made with love by <span class="footer-name">Sreemita</span></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://jhukicslingfrtozebwp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodWtpY3NsaW5nZnJ0b3plYndwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyODYxOTUsImV4cCI6MjA5NTg2MjE5NX0.Xf9QrnDbu7L9yUURp9Yx0_vZFMqHHLY7T4MmB9VFrAQ';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// CAROUSEL
+const slides = document.querySelectorAll('.carousel-slide');
+const dotsWrap = document.getElementById('carousel-dots');
+let cur = 0;
+slides.forEach((_,i) => {
+  const d = document.createElement('button');
+  d.className = 'dot' + (i===0?' active':'');
+  d.onclick = () => goTo(i);
+  dotsWrap.appendChild(d);
+});
+function goTo(n) {
+  slides[cur].classList.remove('active');
+  document.querySelectorAll('.dot')[cur].classList.remove('active');
+  cur = (n + slides.length) % slides.length;
+  slides[cur].classList.add('active');
+  document.querySelectorAll('.dot')[cur].classList.add('active');
+}
+setInterval(() => goTo(cur+1), 4800);
+
+// STATS
+async function loadStats() {
+  const { data } = await sb.from('spots').select('city').eq('approved',true);
+  if (!data) return;
+  document.getElementById('stat-spots').textContent = data.length;
+  ['Delhi','Kolkata','Pune','Bengaluru','Manipal'].forEach(city => {
+    const n = data.filter(s=>s.city===city).length;
+    const el = document.getElementById('count-' + city);
+    if (el) el.textContent = n === 0 ? 'Be first to submit' : n + ' spot' + (n!==1?'s':'');
+  });
+}
+loadStats();
+</script>
+</body>
+</html>
