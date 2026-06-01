@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Explore -- Jugaad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --orange:#FF6B00;--orange-light:#FF8C38;--orange-pale:#FFF3E8;
+      --yellow:#FFD012;--yellow-pale:#FFFBE6;
+      --dark:#1A1200;--dark-2:#2E2200;--mid:#6B5000;--muted:#A07820;
+      --surface:#FFFDF7;--surface-2:#FFF8EC;--border:#FFE4B0;--white:#FFFFFF;
+      --radius:16px;--radius-sm:10px;
+      --shadow:0 4px 24px rgba(255,107,0,0.10);--shadow-lg:0 8px 40px rgba(255,107,0,0.18);
+    }
+    html,body{font-family:'Poppins',sans-serif;background:var(--surface);color:var(--dark);-webkit-font-smoothing:antialiased;overflow:hidden;}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:62px;background:rgba(255,253,247,0.94);backdrop-filter:blur(14px);border-bottom:1.5px solid var(--border);}
+    .nav-logo{font-size:22px;font-weight:900;color:var(--orange);letter-spacing:-0.5px;text-decoration:none;}
+    .nav-logo span{color:var(--dark);}
+    .nav-links{display:flex;gap:28px;align-items:center;}
+    .nav-links a{font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;transition:color 0.15s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--orange);}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:100px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.18s ease;text-decoration:none;white-space:nowrap;line-height:1;}
+    .btn-primary{background:var(--orange);color:#fff;}
+    .btn-primary:hover{background:var(--orange-light);transform:translateY(-1px);}
+    .btn-sm{padding:6px 14px;font-size:12px;}
+
+    .explore-wrap{display:flex;height:100vh;padding-top:62px;}
+
+    /* SIDEBAR */
+    .sidebar{width:380px;flex-shrink:0;background:var(--white);border-right:1.5px solid var(--border);display:flex;flex-direction:column;overflow:hidden;z-index:100;}
+    .sidebar-header{padding:20px 20px 0;flex-shrink:0;}
+    .sidebar-title{font-size:18px;font-weight:900;color:var(--dark);letter-spacing:-0.5px;}
+    .sidebar-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+    .search-bar-wrap{position:relative;margin:14px 20px 0;}
+    .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;}
+    .search-input{width:100%;padding:10px 14px 10px 36px;border-radius:100px;border:1.5px solid var(--border);font-family:'Poppins',sans-serif;font-size:13px;color:var(--dark);background:var(--surface);outline:none;transition:border-color 0.15s;}
+    .search-input:focus{border-color:var(--orange);background:#fff;}
+    .filter-row{display:flex;gap:8px;padding:12px 20px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;}
+    .filter-row::-webkit-scrollbar{display:none;}
+    .cat-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--surface-2);color:var(--mid);white-space:nowrap;transition:all 0.15s;font-family:'Poppins',sans-serif;}
+    .cat-pill:hover{border-color:var(--orange);color:var(--orange);background:var(--orange-pale);}
+    .cat-pill.active{background:var(--orange);color:#fff;border-color:var(--orange);}
+    .cat-pill.active-all{background:var(--dark);color:#fff;border-color:var(--dark);}
+    .city-select{margin:0 20px 12px;}
+    .city-select select,.form-group select,.form-group input[type=text],.form-group input[type=tel],.form-group textarea{width:100%;padding:11px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);font-family:'Poppins',sans-serif;font-size:14px;color:var(--dark);outline:none;transition:border-color 0.15s;}
+    .city-select select:focus,.form-group select:focus,.form-group input:focus,.form-group textarea:focus{border-color:var(--orange);background:#fff;}
+    select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%23A07820' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+    .results-count{padding:0 20px 10px;font-size:12px;color:var(--muted);font-weight:600;}
+    .spots-list{flex:1;overflow-y:auto;padding:0 20px 20px;display:flex;flex-direction:column;gap:10px;}
+    .spots-list::-webkit-scrollbar{width:4px;}
+    .spots-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+    .spot-list-card{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px;cursor:pointer;transition:all 0.15s;display:flex;gap:12px;align-items:flex-start;}
+    .spot-list-card:hover{border-color:var(--orange);background:var(--orange-pale);}
+    .slc-thumb{width:52px;height:52px;border-radius:8px;flex-shrink:0;background:var(--surface-2);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:22px;}
+    .slc-thumb img{width:100%;height:100%;object-fit:cover;}
+    .slc-info{flex:1;min-width:0;}
+    .slc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--orange);margin-bottom:2px;}
+    .slc-name{font-size:14px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .slc-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+    .slc-tip{font-size:11px;color:var(--mid);margin-top:4px;background:var(--yellow-pale);padding:4px 8px;border-radius:4px;}
+    .no-results{text-align:center;padding:48px 20px;color:var(--muted);}
+    .no-icon{font-size:40px;margin-bottom:10px;}
+    .no-results p{font-size:13px;line-height:1.6;}
+    .submit-btn-sidebar{margin:0 20px 20px;flex-shrink:0;}
+    .submit-btn-sidebar .btn{width:100%;justify-content:center;padding:12px;border-radius:var(--radius-sm);}
+
+    /* MAP */
+    #map{flex:1;z-index:1;}
+    .jugaad-pin{width:34px;height:34px;border-radius:50% 50% 50% 4px;display:flex;align-items:center;justify-content:center;font-size:15px;border:2.5px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.22);transform:rotate(-45deg);cursor:pointer;}
+    .jugaad-pin span{transform:rotate(45deg);display:block;}
+    .leaflet-popup-content-wrapper{border-radius:var(--radius) !important;box-shadow:var(--shadow-lg) !important;border:1.5px solid var(--border) !important;padding:0 !important;overflow:hidden;}
+    .leaflet-popup-content{margin:0 !important;width:270px !important;}
+    .leaflet-popup-tip-container{display:none;}
+    .leaflet-control-attribution{display:none !important;}
+    .popup-photo{width:100%;height:130px;object-fit:cover;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:36px;}
+    .popup-photo img{width:100%;height:100%;object-fit:cover;}
+    .popup-body{padding:12px 14px 14px;}
+    .popup-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--orange);margin-bottom:4px;}
+    .popup-name{font-size:15px;font-weight:800;color:var(--dark);margin-bottom:3px;}
+    .popup-city{font-size:12px;color:var(--muted);}
+    .popup-address{font-size:12px;color:var(--mid);margin-top:2px;}
+    .popup-tip{font-size:11px;background:var(--yellow-pale);border-left:3px solid var(--yellow);padding:6px 9px;border-radius:0 5px 5px 0;margin-top:8px;color:var(--dark-2);}
+
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(26,18,0,0.6);backdrop-filter:blur(5px);align-items:flex-end;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    @media(min-width:600px){.modal-overlay{align-items:center;}}
+    .modal{background:var(--white);width:100%;max-width:540px;border-radius:var(--radius) var(--radius) 0 0;max-height:93vh;overflow-y:auto;animation:slideUp 0.28s cubic-bezier(0.34,1.4,0.64,1);padding:28px 24px 44px;}
+    @media(min-width:600px){.modal{border-radius:var(--radius);}}
+    @keyframes slideUp{from{transform:translateY(60px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+    .modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 22px;}
+    @media(min-width:600px){.modal-handle{display:none;}}
+    .modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;}
+    .modal-title{font-size:20px;font-weight:800;color:var(--dark);}
+    .modal-sub{font-size:13px;color:var(--muted);margin-top:3px;}
+    .modal-close{background:var(--surface-2);border:none;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;color:var(--mid);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .modal-close:hover{background:var(--border);}
+    .form-group{margin-bottom:16px;}
+    label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.6px;}
+    textarea{resize:vertical;min-height:72px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .form-note{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5;}
+    .photo-upload-area{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;cursor:pointer;transition:all 0.15s;background:var(--surface-2);position:relative;}
+    .photo-upload-area:hover{border-color:var(--orange);background:var(--orange-pale);}
+    .photo-upload-area.has-file{border-color:var(--orange);border-style:solid;}
+    .photo-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .upload-icon{font-size:28px;margin-bottom:6px;}
+    .upload-text{font-size:13px;font-weight:600;color:var(--mid);}
+    .upload-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+    .photo-preview-img{width:100%;height:150px;object-fit:cover;border-radius:var(--radius-sm);display:none;}
+    #mini-map{height:170px;border-radius:var(--radius-sm);border:1.5px solid var(--border);overflow:hidden;}
+    .success-msg{display:none;text-align:center;padding:20px 0;}
+    .success-emoji{font-size:48px;margin-bottom:12px;}
+    .success-msg h3{font-size:18px;font-weight:800;color:var(--dark);margin-bottom:6px;}
+    .success-msg p{font-size:13px;color:var(--muted);line-height:1.6;}
+
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:#fff;padding:12px 24px;border-radius:100px;font-size:13px;font-weight:600;z-index:9999;transition:transform 0.3s ease;white-space:nowrap;box-shadow:var(--shadow-lg);}
+    .toast.show{transform:translateX(-50%) translateY(0);}
+
+    @media(max-width:768px){
+      html,body{overflow:auto;}
+      .explore-wrap{flex-direction:column;height:auto;}
+      .sidebar{width:100%;height:auto;border-right:none;border-bottom:1.5px solid var(--border);overflow:visible;}
+      #map{height:55vh;flex:none;}
+      .spots-list{max-height:320px;}
+    }
+    @media(max-width:480px){
+      nav{padding:0 18px;}
+      .nav-links{display:none;}
+      .form-row{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html"><span>जु</span>gaad</a>
+  <div class="nav-links">
+    <a href="explore.html" class="active">Explore</a>
+    <a href="categories/index.html">Library</a>
+    <a href="submit.html">Submit a Spot</a>
+  </div>
+  <div class="nav-right">
+    <a class="btn btn-primary btn-sm" href="submit.html">Submit your Jugaad</a>
+  </div>
+</nav>
+
+<div class="explore-wrap">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">Find Jugaad</div>
+      <div class="sidebar-sub">Approved spots across 5 cities</div>
+    </div>
+    <div class="search-bar-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="s-query" type="text" placeholder="Search spots..." oninput="renderList()"/>
+    </div>
+    <div class="city-select">
+      <select id="s-city" onchange="renderList()">
+        <option value="">All Cities</option>
+        <option>Delhi</option>
+        <option>Kolkata</option>
+        <option>Pune</option>
+        <option>Bengaluru</option>
+        <option>Manipal</option>
+      </select>
+    </div>
+    <div class="filter-row" id="cat-filters">
+      <button class="cat-pill active-all" data-cat="all" onclick="setCat('all',this)">All</button>
+      <button class="cat-pill" data-cat="Cheap Printers" onclick="setCat('Cheap Printers',this)">🖨️ Printers</button>
+      <button class="cat-pill" data-cat="Food Stalls" onclick="setCat('Food Stalls',this)">🍱 Food</button>
+      <button class="cat-pill" data-cat="Medals & Trophies" onclick="setCat('Medals & Trophies',this)">🏆 Trophies</button>
+      <button class="cat-pill" data-cat="Stationery Shops" onclick="setCat('Stationery Shops',this)">✏️ Stationery</button>
+      <button class="cat-pill" data-cat="Event Supplies" onclick="setCat('Event Supplies',this)">🎪 Events</button>
+      <button class="cat-pill" data-cat="Flex & Banner Printing" onclick="setCat('Flex & Banner Printing',this)">🖼️ Flex</button>
+      <button class="cat-pill" data-cat="Photographers & Studios" onclick="setCat('Photographers & Studios',this)">📸 Photos</button>
+      <button class="cat-pill" data-cat="Tailors & Costume Makers" onclick="setCat('Tailors & Costume Makers',this)">🧵 Tailors</button>
+      <button class="cat-pill" data-cat="Sound & AV Rentals" onclick="setCat('Sound & AV Rentals',this)">🎤 AV</button>
+      <button class="cat-pill" data-cat="Transport" onclick="setCat('Transport',this)">🚐 Transport</button>
+    </div>
+    <div class="results-count" id="results-count"></div>
+    <div class="spots-list" id="spots-list">
+      <div class="no-results"><div class="no-icon">⏳</div><p>Loading spots...</p></div>
+    </div>
+    <div class="submit-btn-sidebar">
+      <a class="btn btn-primary" href="submit.html" style="width:100%;justify-content:center;padding:12px;border-radius:var(--radius-sm);display:flex;">Submit your Jugaad</a>
+    </div>
+  </div>
+  <div id="map"></div>
+</div>
+
+<!-- SUBMIT MODAL -->
+<div class="modal-overlay" id="submit-modal" onclick="overlayClose(event,'submit-modal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div><div class="modal-title">Submit a Spot</div><div class="modal-sub">We'll review it before it goes live</div></div>
+      <button class="modal-close" onclick="closeModal('submit-modal')">✕</button>
+    </div>
+    <div id="submit-form-wrap">
+      <div class="form-group">
+        <label>Place Name *</label>
+        <input type="text" id="f-name" placeholder="e.g. Sharma Printers"/>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category *</label>
+          <select id="f-cat">
+            <option value="">Select...</option>
+            <option>Cheap Printers</option>
+            <option>Food Stalls</option>
+            <option>Medals & Trophies</option>
+            <option>Stationery Shops</option>
+            <option>Event Supplies</option>
+            <option>Flex & Banner Printing</option>
+            <option>Photographers & Studios</option>
+            <option>Tailors & Costume Makers</option>
+            <option>Sound & AV Rentals</option>
+            <option>Transport</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>City *</label>
+          <select id="f-city">
+            <option value="">Select...</option>
+            <option>Delhi</option>
+            <option>Kolkata</option>
+            <option>Pune</option>
+            <option>Bengaluru</option>
+            <option>Manipal</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Address / Landmark</label>
+        <input type="text" id="f-address" placeholder="e.g. Near Main Gate, College Street"/>
+      </div>
+      <div class="form-group">
+        <label>Insider Tip</label>
+        <input type="text" id="f-tip" placeholder="e.g. Ask for student discount, open till 10pm"/>
+      </div>
+      <div class="form-group">
+        <label>Phone / WhatsApp</label>
+        <input type="tel" id="f-phone" placeholder="+91 98765 43210"/>
+      </div>
+      <div class="form-group">
+        <label>Your Name (optional)</label>
+        <input type="text" id="f-by" placeholder="Who's submitting this?"/>
+      </div>
+      <div class="form-group">
+        <label>Photo of the Place</label>
+        <div class="photo-upload-area" id="upload-area">
+          <input type="file" id="f-photo" accept="image/*" onchange="previewPhoto(event)"/>
+          <div id="upload-placeholder">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text">Tap to add a photo</div>
+            <div class="upload-sub">A selfie there or the shop front -- anything helps!</div>
+          </div>
+          <img id="photo-preview-img" class="photo-preview-img" alt="Preview"/>
+        </div>
+        <div class="form-note">Max 5MB · JPG, PNG, WEBP</div>
+      </div>
+      <div class="form-group">
+        <label>Pin on Map</label>
+        <p class="form-note" style="margin-bottom:8px;">Click the map below to drop a pin. If you skip this we'll use the city centre.</p>
+        <div id="mini-map"></div>
+        <p class="form-note" id="pin-label" style="margin-top:6px;">No pin dropped yet</p>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:8px;padding:14px;border-radius:var(--radius-sm);font-size:15px;justify-content:center;" onclick="submitSpot()">Submit for Review</button>
+    </div>
+    <div class="success-msg" id="submit-success">
+      <div class="success-emoji">🎉</div>
+      <h3>Spot submitted!</h3>
+      <p>We'll review it and add it to the map soon.<br/>Thanks for making Jugaad better!</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://jhukicslingfrtozebwp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodWtpY3NsaW5nZnJ0b3plYndwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyODYxOTUsImV4cCI6MjA5NTg2MjE5NX0.Xf9QrnDbu7L9yUURp9Yx0_vZFMqHHLY7T4MmB9VFrAQ';
+const STORAGE_BUCKET = 'spot-photos';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const CAT_CONFIG = {
+  'Cheap Printers':          {emoji:'🖨️',color:'#1E88E5'},
+  'Food Stalls':             {emoji:'🍱',color:'#E53935'},
+  'Medals & Trophies':       {emoji:'🏆',color:'#F9A825'},
+  'Stationery Shops':        {emoji:'✏️',color:'#43A047'},
+  'Event Supplies':          {emoji:'🎪',color:'#8E24AA'},
+  'Flex & Banner Printing':  {emoji:'🖼️',color:'#00897B'},
+  'Photographers & Studios': {emoji:'📸',color:'#FF6B00'},
+  'Tailors & Costume Makers':{emoji:'🧵',color:'#D81B60'},
+  'Sound & AV Rentals':      {emoji:'🎤',color:'#3949AB'},
+  'Transport':               {emoji:'🚐',color:'#6D4C41'},
+};
+
+const CITY_COORDS = {
+  'Delhi':     [28.6139,77.2090],
+  'Kolkata':   [22.5726,88.3639],
+  'Pune':      [18.5204,73.8567],
+  'Bengaluru': [12.9716,77.5946],
+  'Manipal':   [13.3525,74.7868],
+};
+
+let map, miniMap, miniMarker;
+let allSpots=[], markers=[];
+let activeCat='all', pinLat=null, pinLng=null;
+
+function initMap() {
+  map = L.map('map',{zoomControl:true}).setView([20.5937,78.9629],5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+}
+
+function makeIcon(cat) {
+  const cfg = CAT_CONFIG[cat]||{emoji:'📍',color:'#FF6B00'};
+  return L.divIcon({
+    className:'',
+    html:`<div class="jugaad-pin" style="background:${cfg.color}"><span>${cfg.emoji}</span></div>`,
+    iconSize:[34,34],iconAnchor:[17,34],popupAnchor:[0,-36],
+  });
+}
+
+function buildPopup(s) {
+  const cfg = CAT_CONFIG[s.category]||{emoji:'📍'};
+  const photo = s.photo_url
+    ? `<div class="popup-photo"><img src="${s.photo_url}" alt="${s.name}"/></div>`
+    : `<div class="popup-photo">${cfg.emoji}</div>`;
+  return `${photo}<div class="popup-body">
+    <div class="popup-cat">${cfg.emoji} ${s.category}</div>
+    <div class="popup-name">${s.name}</div>
+    <div class="popup-city">📌 ${s.city}</div>
+    ${s.address?`<div class="popup-address">📍 ${s.address}</div>`:''}
+    ${s.tip?`<div class="popup-tip">💡 ${s.tip}</div>`:''}
+  </div>`;
+}
+
+function renderMarkers() {
+  markers.forEach(m=>map.removeLayer(m));
+  markers=[];
+  const city = document.getElementById('s-city').value;
+  allSpots.filter(s=>{
+    const mc = activeCat==='all'||s.category===activeCat;
+    const mci = !city||s.city===city;
+    return mc&&mci&&s.lat&&s.lng;
+  }).forEach(s=>{
+    const m = L.marker([s.lat,s.lng],{icon:makeIcon(s.category)})
+      .addTo(map).bindPopup(buildPopup(s),{maxWidth:280});
+    m.on('mouseover',function(){this.openPopup();});
+    m.spotId=s.id;
+    markers.push(m);
+  });
+}
+
+function renderList() {
+  const query=(document.getElementById('s-query').value||'').toLowerCase();
+  const city=document.getElementById('s-city').value;
+  const filtered=allSpots.filter(s=>{
+    const mc=activeCat==='all'||s.category===activeCat;
+    const mci=!city||s.city===city;
+    const mq=!query||s.name.toLowerCase().includes(query)||(s.address||'').toLowerCase().includes(query);
+    return mc&&mci&&mq;
+  });
+  const list=document.getElementById('spots-list');
+  document.getElementById('results-count').textContent=`${filtered.length} spot${filtered.length!==1?'s':''} found`;
+  if(!filtered.length){
+    list.innerHTML=`<div class="no-results"><div class="no-icon">🗺️</div><p>Nothing here yet.<br/>Be the first to submit one!</p></div>`;
+    renderMarkers(); return;
+  }
+  list.innerHTML=filtered.map(s=>{
+    const cfg=CAT_CONFIG[s.category]||{emoji:'📍'};
+    const thumb=s.photo_url
+      ?`<div class="slc-thumb"><img src="${s.photo_url}" alt="${s.name}"/></div>`
+      :`<div class="slc-thumb">${cfg.emoji}</div>`;
+    return `<div class="spot-list-card" onclick="focusSpot(${s.lat},${s.lng},'${s.id}')">
+      ${thumb}
+      <div class="slc-info">
+        <div class="slc-cat">${s.category}</div>
+        <div class="slc-name">${s.name}</div>
+        <div class="slc-meta">📌 ${s.city}${s.address?' · '+s.address:''}</div>
+        ${s.tip?`<div class="slc-tip">💡 ${s.tip}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  renderMarkers();
+}
+
+function focusSpot(lat,lng,id) {
+  map.setView([lat,lng],16);
+  const m=markers.find(m=>m.spotId===id);
+  if(m) setTimeout(()=>m.openPopup(),300);
+}
+
+function setCat(cat,el) {
+  activeCat=cat;
+  document.querySelectorAll('#cat-filters .cat-pill').forEach(p=>p.classList.remove('active','active-all'));
+  el.classList.add(cat==='all'?'active-all':'active');
+  renderList();
+}
+
+async function loadSpots() {
+  const {data}=await sb.from('spots').select('*').eq('approved',true);
+  allSpots=data||[];
+  const params=new URLSearchParams(window.location.search);
+  const city=params.get('city');
+  if(city){
+    document.getElementById('s-city').value=city;
+    const coords=CITY_COORDS[city];
+    if(coords) map.setView(coords,13);
+  }
+  if(window.location.hash==='#submit') openModal('submit-modal');
+  renderList();
+}
+
+function initMiniMap() {
+  if(miniMap){miniMap.remove();miniMap=null;miniMarker=null;}
+  miniMap=L.map('mini-map',{zoomControl:false}).setView([20.5937,78.9629],4);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(miniMap);
+  miniMap.on('click',e=>{
+    pinLat=e.latlng.lat;pinLng=e.latlng.lng;
+    if(miniMarker) miniMap.removeLayer(miniMarker);
+    miniMarker=L.circleMarker([pinLat,pinLng],{radius:10,color:'#FF6B00',fillColor:'#FF6B00',fillOpacity:1}).addTo(miniMap);
+    document.getElementById('pin-label').textContent=`Pin dropped at ${pinLat.toFixed(5)}, ${pinLng.toFixed(5)}`;
+  });
+  document.getElementById('f-city').addEventListener('change',function(){
+    const c=CITY_COORDS[this.value];
+    if(c){miniMap.setView(c,13);pinLat=c[0];pinLng=c[1];}
+  });
+}
+
+function previewPhoto(e) {
+  const file=e.target.files[0];if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    document.getElementById('photo-preview-img').src=ev.target.result;
+    document.getElementById('photo-preview-img').style.display='block';
+    document.getElementById('upload-placeholder').style.display='none';
+    document.getElementById('upload-area').classList.add('has-file');
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitSpot() {
+  const name=document.getElementById('f-name').value.trim();
+  const cat=document.getElementById('f-cat').value;
+  const city=document.getElementById('f-city').value;
+  if(!name||!cat||!city){showToast('Fill in name, category and city first');return;}
+  const lat=pinLat||(CITY_COORDS[city]?CITY_COORDS[city][0]:20.5937);
+  const lng=pinLng||(CITY_COORDS[city]?CITY_COORDS[city][1]:78.9629);
+  let photo_url=null;
+  const photoFile=document.getElementById('f-photo').files[0];
+  if(photoFile){
+    const ext=photoFile.name.split('.').pop();
+    const fn=`${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const {error:ue}=await sb.storage.from(STORAGE_BUCKET).upload(fn,photoFile,{contentType:photoFile.type});
+    if(!ue){
+      const {data:ud}=sb.storage.from(STORAGE_BUCKET).getPublicUrl(fn);
+      photo_url=ud.publicUrl;
+    }
+  }
+  const {error}=await sb.from('spots').insert([{
+    name,category:cat,city,
+    address:document.getElementById('f-address').value.trim(),
+    tip:document.getElementById('f-tip').value.trim(),
+    phone:document.getElementById('f-phone').value.trim(),
+    submitted_by:document.getElementById('f-by').value.trim(),
+    lat,lng,photo_url
+  }]);
+  if(error){showToast('Something went wrong, try again');console.error(error);return;}
+  document.getElementById('submit-form-wrap').style.display='none';
+  document.getElementById('submit-success').style.display='block';
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow='hidden';
+  if(id==='submit-modal'){
+    document.getElementById('submit-form-wrap').style.display='block';
+    document.getElementById('submit-success').style.display='none';
+    document.getElementById('photo-preview-img').style.display='none';
+    document.getElementById('upload-placeholder').style.display='block';
+    document.getElementById('upload-area').classList.remove('has-file');
+    pinLat=null;pinLng=null;
+    document.getElementById('pin-label').textContent='No pin dropped yet';
+    setTimeout(initMiniMap,120);
+  }
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+function overlayClose(e,id){if(e.target===document.getElementById(id)) closeModal(id);}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{initMap();loadSpots();});
+</script>
+</body>
+</html>
