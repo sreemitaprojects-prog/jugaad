@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Submit a Spot -- Jugaad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --orange:#FF6B00;--orange-light:#FF8C38;--orange-pale:#FFF3E8;
+      --yellow:#FFD012;--yellow-pale:#FFFBE6;
+      --dark:#1A1200;--dark-2:#2E2200;--mid:#6B5000;--muted:#A07820;
+      --surface:#FFFDF7;--surface-2:#FFF8EC;--border:#FFE4B0;--white:#FFFFFF;
+      --radius:16px;--radius-sm:10px;
+      --shadow:0 4px 24px rgba(255,107,0,0.10);--shadow-lg:0 8px 40px rgba(255,107,0,0.18);
+    }
+    html,body{font-family:'Poppins',sans-serif;background:var(--surface);color:var(--dark);-webkit-font-smoothing:antialiased;}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:62px;background:rgba(255,253,247,0.94);backdrop-filter:blur(14px);border-bottom:1.5px solid var(--border);}
+    .nav-logo{font-size:22px;font-weight:900;color:var(--orange);letter-spacing:-0.5px;text-decoration:none;}
+    .nav-logo span{color:var(--dark);}
+    .nav-links{display:flex;gap:28px;align-items:center;}
+    .nav-links a{font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;transition:color 0.15s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--orange);}
+    .nav-right{display:flex;gap:10px;}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:100px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.18s ease;text-decoration:none;white-space:nowrap;line-height:1;}
+    .btn-primary{background:var(--orange);color:#fff;}
+    .btn-primary:hover{background:var(--orange-light);transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,107,0,0.3);}
+    .btn-yellow{background:var(--yellow);color:var(--dark-2);}
+    .btn-yellow:hover{background:#ffe033;transform:translateY(-1px);}
+    .btn-sm{padding:6px 14px;font-size:12px;}
+
+    /* PAGE HERO */
+    .page-hero{padding:110px 28px 56px;background:linear-gradient(150deg,var(--yellow-pale) 0%,var(--surface) 60%);border-bottom:1.5px solid var(--border);}
+    .page-hero-inner{max-width:640px;margin:0 auto;}
+    .hero-eyebrow{display:inline-block;background:var(--yellow);color:var(--dark-2);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 14px;border-radius:100px;margin-bottom:18px;}
+    .page-hero h1{font-size:clamp(28px,5vw,48px);font-weight:900;color:var(--dark);letter-spacing:-1.5px;line-height:1.08;margin-bottom:12px;}
+    .page-hero h1 span{color:var(--orange);}
+    .page-hero p{font-size:15px;color:var(--mid);line-height:1.75;max-width:480px;}
+
+    /* FORM */
+    .form-wrap{max-width:640px;margin:0 auto;padding:52px 28px 100px;}
+    .form-section{margin-bottom:36px;}
+    .form-section-title{font-size:13px;font-weight:800;color:var(--dark);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;padding-bottom:10px;border-bottom:1.5px solid var(--border);}
+    .form-group{margin-bottom:18px;}
+    label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:0.6px;}
+    .required-star{color:var(--orange);margin-left:2px;}
+    input[type=text],input[type=tel],select,textarea{width:100%;padding:12px 16px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);font-family:'Poppins',sans-serif;font-size:14px;color:var(--dark);outline:none;transition:border-color 0.15s;}
+    input:focus,select:focus,textarea:focus{border-color:var(--orange);background:#fff;}
+    input.error,select.error,textarea.error{border-color:#E53935;background:#fff8f8;}
+    textarea{resize:vertical;min-height:80px;}
+    select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%23A07820' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .form-note{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;}
+    .error-msg{font-size:11px;color:#E53935;margin-top:5px;display:none;}
+    .error-msg.show{display:block;}
+
+    /* PHOTO UPLOAD */
+    .photo-upload-area{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:28px;text-align:center;cursor:pointer;transition:all 0.15s;background:var(--surface-2);position:relative;}
+    .photo-upload-area:hover{border-color:var(--orange);background:var(--orange-pale);}
+    .photo-upload-area.has-file{border-color:var(--orange);border-style:solid;background:var(--orange-pale);}
+    .photo-upload-area.error{border-color:#E53935;}
+    .photo-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .upload-icon{font-size:32px;margin-bottom:8px;}
+    .upload-text{font-size:14px;font-weight:600;color:var(--mid);}
+    .upload-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+    .photo-preview-img{width:100%;height:200px;object-fit:cover;border-radius:var(--radius-sm);display:none;}
+    .photo-change{font-size:12px;font-weight:600;color:var(--orange);margin-top:8px;display:none;cursor:pointer;}
+
+    /* MAP */
+    #mini-map{height:220px;border-radius:var(--radius-sm);border:1.5px solid var(--border);overflow:hidden;margin-top:4px;}
+    .pin-status{font-size:12px;color:var(--muted);margin-top:8px;font-weight:500;}
+    .pin-status.pinned{color:var(--orange);font-weight:600;}
+
+    /* SUBMIT */
+    .submit-row{display:flex;align-items:center;gap:16px;margin-top:8px;flex-wrap:wrap;}
+    .submit-btn{padding:16px 40px;font-size:15px;border-radius:var(--radius-sm);flex-shrink:0;}
+    .submit-note{font-size:12px;color:var(--muted);line-height:1.6;}
+
+    /* SUCCESS MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(26,18,0,0.65);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:24px;}
+    .modal-overlay.open{display:flex;}
+    .success-modal{background:var(--white);border-radius:var(--radius);max-width:440px;width:100%;padding:48px 36px;text-align:center;animation:popIn 0.32s cubic-bezier(0.34,1.56,0.64,1);}
+    @keyframes popIn{from{transform:scale(0.88);opacity:0;}to{transform:scale(1);opacity:1;}}
+    .success-icon{font-size:56px;margin-bottom:16px;display:block;}
+    .success-title{font-size:22px;font-weight:900;color:var(--dark);letter-spacing:-0.5px;margin-bottom:10px;line-height:1.2;}
+    .success-title span{color:var(--orange);}
+    .success-body{font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:28px;}
+    .success-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+    /* CONSISTENT CTA STRIP */
+    .cta-strip{background:var(--dark);padding:40px 28px;text-align:center;}
+    .cta-strip p{font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:16px;}
+    .cta-strip h3{font-size:20px;font-weight:900;color:#fff;letter-spacing:-0.5px;margin-bottom:16px;}
+    .cta-strip h3 span{color:var(--yellow);}
+
+    /* FOOTER */
+    footer{background:var(--dark);color:rgba(255,255,255,0.55);padding:36px 28px;text-align:center;font-size:13px;border-top:1px solid rgba(255,255,255,0.06);}
+    .footer-logo{font-size:24px;font-weight:900;color:var(--orange);margin-bottom:6px;letter-spacing:-0.5px;}
+    .footer-logo span{color:rgba(255,255,255,0.8);}
+    .footer-tagline{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:16px;}
+    .footer-links{display:flex;justify-content:center;gap:24px;margin-bottom:20px;flex-wrap:wrap;}
+    .footer-links a{color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;font-weight:500;transition:color 0.15s;}
+    .footer-links a:hover{color:var(--orange-light);}
+    .footer-cities{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+    .footer-city{font-size:11px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4);padding:3px 12px;border-radius:100px;}
+    .footer-copy{font-size:11px;color:rgba(255,255,255,0.25);}
+    .footer-name{color:var(--yellow);font-weight:700;}
+
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:#E53935;color:#fff;padding:12px 24px;border-radius:100px;font-size:13px;font-weight:600;z-index:9999;transition:transform 0.3s ease;white-space:nowrap;box-shadow:var(--shadow-lg);}
+    .toast.show{transform:translateX(-50%) translateY(0);}
+
+    @media(max-width:600px){
+      nav{padding:0 18px;}
+      .nav-links{display:none;}
+      .form-row{grid-template-columns:1fr;}
+      .form-wrap{padding:40px 20px 80px;}
+      .page-hero{padding:90px 20px 44px;}
+      .success-modal{padding:36px 24px;}
+      .submit-row{flex-direction:column;align-items:stretch;}
+      .submit-btn{text-align:center;justify-content:center;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html"><span>जु</span>gaad</a>
+  <div class="nav-links">
+    <a href="explore.html">Explore</a>
+    <a href="categories/index.html">Library</a>
+    <a href="submit.html" class="active">Submit a Spot</a>
+  </div>
+  <div class="nav-right">
+    <a class="btn btn-primary btn-sm" href="explore.html">Find Jugaad</a>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <div class="hero-eyebrow">Pay it forward</div>
+    <h1>You know a spot.<br/><span>Put it on the map.</span></h1>
+    <p>Every great find that stays in someone's head is a wasted jugaad. Takes 2 minutes. Helps every organiser after you.</p>
+  </div>
+</section>
+
+<div class="form-wrap">
+
+  <div class="form-section">
+    <div class="form-section-title">About the place</div>
+    <div class="form-group">
+      <label>Place Name <span class="required-star">*</span></label>
+      <input type="text" id="f-name" placeholder="e.g. Sharma Printers"/>
+      <div class="error-msg" id="err-name">What's the place called?</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Category <span class="required-star">*</span></label>
+        <select id="f-cat">
+          <option value="">Select...</option>
+          <option>Cheap Printers</option>
+          <option>Food Stalls</option>
+          <option>Medals & Trophies</option>
+          <option>Stationery Shops</option>
+          <option>Event Supplies</option>
+          <option>Flex & Banner Printing</option>
+          <option>Photographers & Studios</option>
+          <option>Tailors & Costume Makers</option>
+          <option>Sound & AV Rentals</option>
+          <option>Transport</option>
+        </select>
+        <div class="error-msg" id="err-cat">Pick a category</div>
+      </div>
+      <div class="form-group">
+        <label>City <span class="required-star">*</span></label>
+        <select id="f-city">
+          <option value="">Select...</option>
+          <option>Delhi</option>
+          <option>Kolkata</option>
+          <option>Pune</option>
+          <option>Bengaluru</option>
+          <option>Manipal</option>
+        </select>
+        <div class="error-msg" id="err-city">Which city is this in?</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Address <span class="required-star">*</span></label>
+      <input type="text" id="f-address" placeholder="e.g. Near Main Gate, College Street, Kolkata"/>
+      <div class="error-msg" id="err-address">Add an address so people can actually find it</div>
+    </div>
+    <div class="form-group">
+      <label>Insider Tip</label>
+      <input type="text" id="f-tip" placeholder="e.g. Ask for student discount, open till 10pm, park outside"/>
+      <div class="form-note">The thing you wish someone had told you before you went.</div>
+    </div>
+    <div class="form-group">
+      <label>Phone / WhatsApp</label>
+      <input type="tel" id="f-phone" placeholder="+91 98765 43210"/>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-title">Photo <span style="color:var(--orange);font-size:10px;">Required</span></div>
+    <div class="photo-upload-area" id="upload-area">
+      <input type="file" id="f-photo" accept="image/*" onchange="previewPhoto(event)"/>
+      <div id="upload-placeholder">
+        <div class="upload-icon">📷</div>
+        <div class="upload-text">Add a photo of the place</div>
+        <div class="upload-sub">A selfie there, the shop front, anything. Max 5MB.</div>
+      </div>
+      <img id="photo-preview-img" class="photo-preview-img" alt="Preview"/>
+      <div class="photo-change" id="photo-change" onclick="document.getElementById('f-photo').click()">Change photo</div>
+    </div>
+    <div class="error-msg" id="err-photo">Add a photo so people know what they're looking for</div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-title">Pin it on the map</div>
+    <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:14px;">Click the map to drop a pin on the exact location. If you skip this, we'll place it at the city centre and adjust it ourselves.</p>
+    <div id="mini-map"></div>
+    <div class="pin-status" id="pin-status">No pin dropped yet</div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-title">About you</div>
+    <div class="form-group">
+      <label>Your Name</label>
+      <input type="text" id="f-by" placeholder="What should we call you?"/>
+      <div class="form-note">Optional, but we'll use it to personalise your thank you.</div>
+    </div>
+  </div>
+
+  <div class="submit-row">
+    <button class="btn btn-primary submit-btn" onclick="submitSpot()">Submit your Jugaad</button>
+    <div class="submit-note">Every submission is reviewed before it goes live.<br/>Usually within 24 hours.</div>
+  </div>
+
+</div>
+
+<!-- CTA STRIP -->
+<div class="cta-strip">
+  <p>Already know what you need?</p>
+  <h3>Find jugaad <span>near you</span></h3>
+  <a class="btn btn-yellow" href="explore.html">Explore the Map</a>
+</div>
+
+<footer>
+  <div class="footer-logo"><span>जु</span>gaad</div>
+  <div class="footer-tagline">Your college budget kit · Crowdsourced by students</div>
+  <div class="footer-links">
+    <a href="explore.html">Explore</a>
+    <a href="categories/index.html">Library</a>
+    <a href="submit.html">Submit a Spot</a>
+    <a href="https://www.instagram.com/sreemitamukherjee/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.linkedin.com/in/sreemita-mukherjee-b19936323/" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+  <div class="footer-cities">
+    <span class="footer-city">Delhi</span>
+    <span class="footer-city">Kolkata</span>
+    <span class="footer-city">Pune</span>
+    <span class="footer-city">Bengaluru</span>
+    <span class="footer-city">Manipal</span>
+  </div>
+  <div class="footer-copy">Made with love by <span class="footer-name">Sreemita</span></div>
+</footer>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="success-modal">
+  <div class="success-modal">
+    <span class="success-icon" id="success-icon">🎉</span>
+    <div class="success-title" id="success-title">your jugaad is in!</div>
+    <div class="success-body" id="success-body">We'll review it and get it on the map soon.</div>
+    <div class="success-btns">
+      <a class="btn btn-primary" href="explore.html">Explore the Map</a>
+      <a class="btn btn-yellow" href="submit.html" onclick="resetForm()">Submit Another</a>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://jhukicslingfrtozebwp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodWtpY3NsaW5nZnJ0b3plYndwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyODYxOTUsImV4cCI6MjA5NTg2MjE5NX0.Xf9QrnDbu7L9yUURp9Yx0_vZFMqHHLY7T4MmB9VFrAQ';
+const STORAGE_BUCKET = 'spot-photos';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const CITY_COORDS = {
+  'Delhi':     [28.6139,77.2090],
+  'Kolkata':   [22.5726,88.3639],
+  'Pune':      [18.5204,73.8567],
+  'Bengaluru': [12.9716,77.5946],
+  'Manipal':   [13.3525,74.7868],
+};
+
+const SUCCESS_MESSAGES = [
+  {
+    icon: '🧡',
+    title: (name) => name ? `${name}, you just made someone's fest easier.` : `you just made someone's fest easier.`,
+    body: `that's the jugaad spirit. we'll get it on the map soon.`
+  },
+  {
+    icon: '🎉',
+    title: (name) => name ? `${name}!! this is going straight to the map.` : `this is going straight to the map.`,
+    body: `jugaad ke rakhwale. we'll review it and add it soon.`
+  },
+  {
+    icon: '✨',
+    title: (name) => name ? `that's the one, ${name}.` : `that's the one.`,
+    body: `you're the reason college fests don't fall apart. we'll get it live soon.`
+  },
+];
+
+let miniMap, miniMarker, pinLat = null, pinLng = null;
+
+// MINI MAP
+document.addEventListener('DOMContentLoaded', () => {
+  miniMap = L.map('mini-map', {zoomControl:false}).setView([20.5937,78.9629],4);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(miniMap);
+  miniMap.on('click', e => {
+    pinLat = e.latlng.lat; pinLng = e.latlng.lng;
+    if (miniMarker) miniMap.removeLayer(miniMarker);
+    miniMarker = L.circleMarker([pinLat,pinLng],{radius:10,color:'#FF6B00',fillColor:'#FF6B00',fillOpacity:1}).addTo(miniMap);
+    const s = document.getElementById('pin-status');
+    s.textContent = `Pin dropped at ${pinLat.toFixed(5)}, ${pinLng.toFixed(5)}`;
+    s.classList.add('pinned');
+  });
+
+  document.getElementById('f-city').addEventListener('change', function() {
+    const c = CITY_COORDS[this.value];
+    if (c) { miniMap.setView(c,13); pinLat=c[0]; pinLng=c[1]; }
+  });
+});
+
+// PHOTO PREVIEW
+function previewPhoto(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = document.getElementById('photo-preview-img');
+    img.src = ev.target.result;
+    img.style.display = 'block';
+    document.getElementById('upload-placeholder').style.display = 'none';
+    document.getElementById('photo-change').style.display = 'block';
+    document.getElementById('upload-area').classList.add('has-file');
+    document.getElementById('upload-area').classList.remove('error');
+    document.getElementById('err-photo').classList.remove('show');
+  };
+  reader.readAsDataURL(file);
+}
+
+// VALIDATE
+function validate() {
+  let ok = true;
+  const fields = [
+    {id:'f-name', err:'err-name'},
+    {id:'f-cat',  err:'err-cat'},
+    {id:'f-city', err:'err-city'},
+    {id:'f-address', err:'err-address'},
+  ];
+  fields.forEach(({id,err}) => {
+    const el = document.getElementById(id);
+    const errEl = document.getElementById(err);
+    if (!el.value.trim()) {
+      el.classList.add('error');
+      errEl.classList.add('show');
+      ok = false;
+    } else {
+      el.classList.remove('error');
+      errEl.classList.remove('show');
+    }
+  });
+  const photo = document.getElementById('f-photo').files[0];
+  if (!photo) {
+    document.getElementById('upload-area').classList.add('error');
+    document.getElementById('err-photo').classList.add('show');
+    ok = false;
+  }
+  return ok;
+}
+
+// SUBMIT
+async function submitSpot() {
+  if (!validate()) {
+    showToast('Fill in the required fields first');
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
+  }
+
+  const btn = document.querySelector('.submit-btn');
+  btn.textContent = 'Submitting...';
+  btn.disabled = true;
+
+  const name    = document.getElementById('f-name').value.trim();
+  const cat     = document.getElementById('f-cat').value;
+  const city    = document.getElementById('f-city').value;
+  const address = document.getElementById('f-address').value.trim();
+  const tip     = document.getElementById('f-tip').value.trim();
+  const phone   = document.getElementById('f-phone').value.trim();
+  const by      = document.getElementById('f-by').value.trim();
+  const lat     = pinLat || (CITY_COORDS[city] ? CITY_COORDS[city][0] : 20.5937);
+  const lng     = pinLng || (CITY_COORDS[city] ? CITY_COORDS[city][1] : 78.9629);
+
+  // UPLOAD PHOTO
+  let photo_url = null;
+  const photoFile = document.getElementById('f-photo').files[0];
+  const ext = photoFile.name.split('.').pop();
+  const fn = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+  const {error:ue} = await sb.storage.from(STORAGE_BUCKET).upload(fn, photoFile, {contentType:photoFile.type});
+  if (!ue) {
+    const {data:ud} = sb.storage.from(STORAGE_BUCKET).getPublicUrl(fn);
+    photo_url = ud.publicUrl;
+  }
+
+  const {error} = await sb.from('spots').insert([{
+    name, category:cat, city, address, tip, phone,
+    submitted_by:by, lat, lng, photo_url
+  }]);
+
+  btn.textContent = 'Submit your Jugaad';
+  btn.disabled = false;
+
+  if (error) { showToast('Something went wrong, try again'); console.error(error); return; }
+
+  // PICK RANDOM SUCCESS MESSAGE
+  const msg = SUCCESS_MESSAGES[Math.floor(Math.random() * SUCCESS_MESSAGES.length)];
+  document.getElementById('success-icon').textContent = msg.icon;
+  document.getElementById('success-title').innerHTML = msg.title(by);
+  document.getElementById('success-body').textContent = msg.body;
+  document.getElementById('success-modal').classList.add('open');
+}
+
+function resetForm() {
+  ['f-name','f-address','f-tip','f-phone','f-by'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-cat').value = '';
+  document.getElementById('f-city').value = '';
+  document.getElementById('photo-preview-img').style.display = 'none';
+  document.getElementById('upload-placeholder').style.display = 'block';
+  document.getElementById('photo-change').style.display = 'none';
+  document.getElementById('upload-area').classList.remove('has-file','error');
+  pinLat = null; pinLng = null;
+  document.getElementById('pin-status').textContent = 'No pin dropped yet';
+  document.getElementById('pin-status').classList.remove('pinned');
+  document.getElementById('success-modal').classList.remove('open');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
