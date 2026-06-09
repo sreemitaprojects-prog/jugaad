@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%23FF6B00'/><text y='.9em' font-size='72' font-family='serif' x='50%' text-anchor='middle' dominant-baseline='hanging' fill='white'>जु</text></svg>"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Confessions Corner — Jugaad</title>
+  <meta name="description" content="Anonymous weekly confessions from college students. One prompt, twenty spots, every Monday."/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --orange:#FF6B00;--orange-light:#FF8C38;--orange-pale:#FFF3E8;
+      --yellow:#FFD012;--yellow-pale:#FFFBE6;
+      --dark:#1A1200;--dark-2:#2E2200;--mid:#6B5000;--muted:#A07820;
+      --surface:#FFFDF7;--surface-2:#FFF8EC;--border:#FFE4B0;--white:#FFFFFF;
+      --radius:16px;--radius-sm:10px;
+      --shadow:0 4px 24px rgba(255,107,0,0.10);--shadow-lg:0 8px 40px rgba(255,107,0,0.18);
+    }
+    html,body{font-family:'Poppins',sans-serif;background:var(--surface);color:var(--dark);-webkit-font-smoothing:antialiased;}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:62px;background:rgba(255,253,247,0.94);backdrop-filter:blur(14px);border-bottom:1.5px solid var(--border);}
+    .nav-logo{font-size:22px;font-weight:900;color:var(--orange);letter-spacing:-0.5px;text-decoration:none;}
+    .nav-logo span{color:var(--dark);}
+    .nav-links{display:flex;gap:22px;align-items:center;}
+    .nav-links a{font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;transition:color 0.15s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--orange);}
+    .nav-right{display:flex;gap:10px;align-items:center;}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:100px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.18s ease;text-decoration:none;white-space:nowrap;line-height:1;}
+    .btn-primary{background:var(--orange);color:#fff;}
+    .btn-primary:hover{background:var(--orange-light);transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,107,0,0.3);}
+    .btn-yellow{background:var(--yellow);color:var(--dark-2);}
+    .btn-yellow:hover{background:#ffe033;transform:translateY(-1px);}
+    .btn-sm{padding:6px 14px;font-size:12px;}
+    .btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+
+    /* HERO */
+    .conf-hero{
+      padding-top:62px;
+      background:linear-gradient(150deg,#1A1200 0%,#2E1000 55%,#1A0800 100%);
+      min-height:500px;display:flex;align-items:center;justify-content:center;
+      position:relative;overflow:hidden;
+    }
+    .conf-hero::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 65% 50%,rgba(255,107,0,0.18) 0%,transparent 65%);
+      pointer-events:none;
+    }
+    .conf-hero::after{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 20% 80%,rgba(255,208,18,0.06) 0%,transparent 50%);
+      pointer-events:none;
+    }
+    .conf-hero-inner{
+      max-width:740px;width:100%;padding:64px 32px;
+      text-align:center;position:relative;z-index:1;
+    }
+    .conf-week-badge{
+      display:inline-block;
+      background:rgba(255,208,18,0.15);border:1px solid rgba(255,208,18,0.3);
+      color:var(--yellow);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+      padding:5px 16px;border-radius:100px;margin-bottom:24px;
+    }
+    .conf-hero h1{
+      font-size:clamp(40px,8vw,80px);font-weight:900;color:#fff;
+      line-height:1.0;letter-spacing:-2px;margin-bottom:18px;
+    }
+    .conf-hero h1 em{color:var(--orange);font-style:normal;}
+    .conf-tagline{
+      font-size:13px;color:rgba(255,255,255,0.4);
+      letter-spacing:3px;text-transform:uppercase;font-weight:600;margin-bottom:36px;
+    }
+    .conf-prompt-box{
+      background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.11);
+      border-radius:var(--radius);padding:22px 28px;margin-bottom:36px;
+    }
+    .conf-prompt-label{
+      font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+      color:rgba(255,208,18,0.65);margin-bottom:10px;
+    }
+    .conf-prompt-text{
+      font-size:clamp(15px,2.5vw,20px);font-weight:700;color:#fff;
+      line-height:1.45;font-style:italic;
+    }
+    .conf-counter-row{
+      display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px;
+    }
+    .count-num{
+      font-size:clamp(52px,10vw,96px);font-weight:900;color:var(--orange);
+      line-height:1;letter-spacing:-3px;transition:color 0.4s;
+    }
+    .count-meta{text-align:left;}
+    .count-of{font-size:15px;color:rgba(255,255,255,0.38);font-weight:700;display:block;line-height:1.2;}
+    .count-label{font-size:10px;color:rgba(255,255,255,0.28);font-weight:500;letter-spacing:1.5px;text-transform:uppercase;}
+    .conf-progress{
+      width:100%;max-width:380px;height:5px;background:rgba(255,255,255,0.1);
+      border-radius:3px;overflow:hidden;margin:0 auto;
+    }
+    .conf-progress-fill{
+      height:100%;border-radius:3px;
+      background:linear-gradient(90deg,var(--orange),var(--yellow));
+      transition:width 0.7s cubic-bezier(.4,0,.2,1);width:0%;
+    }
+
+    /* MAIN CONTENT */
+    .conf-main{max-width:800px;margin:0 auto;padding:64px 24px 0;}
+
+    /* FORM CARD */
+    .form-card{
+      background:var(--white);border-radius:24px;
+      border:1.5px solid var(--border);box-shadow:var(--shadow-lg);
+      padding:40px;max-width:580px;margin:0 auto;
+    }
+    .form-card-head{margin-bottom:28px;text-align:center;}
+    .anon-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      background:var(--surface-2);border:1px solid var(--border);
+      color:var(--mid);font-size:11px;font-weight:700;letter-spacing:0.5px;
+      padding:4px 14px;border-radius:100px;margin-bottom:14px;
+    }
+    .form-card-head h2{font-size:22px;font-weight:800;margin-bottom:6px;}
+    .form-card-head p{font-size:13px;color:var(--muted);}
+    .conf-textarea{
+      width:100%;min-height:136px;
+      border:1.5px solid var(--border);border-radius:var(--radius);
+      padding:16px 18px;font-family:'Poppins',sans-serif;font-size:15px;
+      font-weight:500;color:var(--dark);resize:vertical;outline:none;
+      transition:border-color 0.15s;background:var(--surface);line-height:1.65;
+    }
+    .conf-textarea:focus{border-color:var(--orange);}
+    .conf-textarea::placeholder{color:var(--muted);font-weight:400;}
+    .textarea-meta{display:flex;justify-content:flex-end;margin:8px 0 20px;}
+    .char-disp{font-size:12px;color:var(--muted);}
+    .char-disp.warn{color:#E53935;}
+    .conf-submit-btn{width:100%;justify-content:center;padding:14px 24px;font-size:15px;}
+    .conf-form-note{font-size:11px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.5;}
+    .form-inline-msg{margin-top:12px;font-size:13px;text-align:center;font-weight:600;display:none;}
+
+    /* SUCCESS STATE */
+    .success-card{
+      background:var(--white);border-radius:24px;border:1.5px solid var(--border);
+      box-shadow:var(--shadow-lg);padding:48px 40px;max-width:580px;margin:0 auto;
+      text-align:center;
+    }
+    .success-icon{font-size:48px;margin-bottom:20px;}
+    .success-card h2{font-size:24px;font-weight:800;margin-bottom:10px;}
+    .success-card p{font-size:14px;color:var(--muted);line-height:1.6;}
+
+    /* BOARD */
+    .board-header{text-align:center;margin-bottom:40px;}
+    .board-full-pill{
+      display:inline-block;background:#E8F5E9;color:#2E7D32;
+      font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+      padding:4px 14px;border-radius:100px;margin-bottom:14px;
+    }
+    .board-header h2{font-size:28px;font-weight:800;margin-bottom:6px;}
+    .board-header p{font-size:14px;color:var(--muted);}
+    .confessions-grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(218px,1fr));gap:14px;
+    }
+    .c-card{
+      background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);
+      padding:22px 18px 14px;position:relative;
+      transition:box-shadow 0.2s,transform 0.2s;
+    }
+    .c-card:hover{box-shadow:var(--shadow);transform:translateY(-2px);}
+    .c-card-num{
+      position:absolute;top:12px;right:14px;
+      font-size:10px;font-weight:700;color:var(--muted);letter-spacing:0.5px;
+    }
+    .c-card-text{
+      font-size:13.5px;font-weight:500;color:var(--dark);
+      line-height:1.65;margin-bottom:14px;min-height:56px;
+      padding-right:22px;
+    }
+    .c-card-foot{display:flex;justify-content:flex-end;}
+    .share-btn{
+      display:inline-flex;align-items:center;gap:4px;
+      font-family:'Poppins',sans-serif;font-size:11px;font-weight:700;
+      color:var(--orange);background:var(--orange-pale);border:none;
+      border-radius:100px;padding:5px 12px;cursor:pointer;transition:all 0.15s;
+    }
+    .share-btn:hover{background:var(--orange);color:#fff;}
+
+    /* PAST WEEKS */
+    .past-section{max-width:800px;margin:64px auto 0;padding:0 24px;}
+    .section-eyebrow{
+      font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+      color:var(--muted);margin-bottom:20px;
+    }
+    .past-week-item{border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:10px;}
+    .past-week-hd{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 20px;cursor:pointer;background:var(--white);transition:background 0.15s;
+    }
+    .past-week-hd:hover{background:var(--surface-2);}
+    .past-week-date{font-size:13px;font-weight:700;color:var(--dark);}
+    .past-week-chevron{color:var(--muted);font-size:14px;transition:transform 0.2s;}
+    .past-week-item.open .past-week-chevron{transform:rotate(180deg);}
+    .past-week-body{
+      display:none;padding:16px 20px;
+      border-top:1.5px solid var(--border);background:var(--surface);
+    }
+    .past-week-item.open .past-week-body{display:block;}
+    .past-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;}
+    .past-c-card{
+      background:var(--white);border:1px solid var(--border);
+      border-radius:var(--radius-sm);padding:14px;
+      font-size:12.5px;color:var(--dark);line-height:1.6;
+    }
+    .past-empty{color:var(--muted);font-size:13px;}
+
+    /* SUGGEST */
+    .suggest-section{max-width:800px;margin:56px auto 0;padding:0 24px 88px;}
+    .suggest-card{
+      background:linear-gradient(135deg,var(--yellow-pale),var(--orange-pale));
+      border:1.5px solid var(--border);border-radius:24px;padding:44px 40px;text-align:center;
+    }
+    .suggest-icon{font-size:36px;margin-bottom:16px;}
+    .suggest-card h3{font-size:22px;font-weight:800;margin-bottom:8px;}
+    .suggest-card p{font-size:13px;color:var(--mid);margin-bottom:28px;line-height:1.6;}
+    .suggest-row{display:flex;gap:10px;max-width:500px;margin:0 auto;}
+    .suggest-input{
+      flex:1;height:46px;padding:0 18px;
+      border:1.5px solid var(--border);border-radius:100px;
+      font-family:'Poppins',sans-serif;font-size:13px;font-weight:500;
+      outline:none;background:var(--white);transition:border-color 0.15s;
+    }
+    .suggest-input:focus{border-color:var(--orange);}
+    .suggest-msg{margin-top:14px;font-size:13px;font-weight:600;display:none;}
+
+    /* FOOTER */
+    footer{background:var(--dark);color:rgba(255,255,255,0.5);padding:40px 32px;text-align:center;font-size:12px;}
+    .footer-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;margin-bottom:14px;}
+    .footer-nav a{color:rgba(255,255,255,0.4);text-decoration:none;font-size:12px;font-weight:600;transition:color 0.15s;}
+    .footer-nav a:hover{color:var(--orange);}
+    .footer-copy{color:rgba(255,255,255,0.3);}
+    .footer-name{color:var(--orange);}
+
+    /* SHARE MODAL */
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(26,18,0,0.87);
+      z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;
+    }
+    .share-modal{
+      background:var(--white);border-radius:24px;padding:32px;
+      max-width:460px;width:100%;position:relative;max-height:92vh;overflow-y:auto;
+    }
+    .modal-close{
+      position:absolute;top:14px;right:14px;
+      background:var(--surface-2);border:none;border-radius:100px;
+      width:32px;height:32px;cursor:pointer;font-size:14px;color:var(--mid);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .share-modal h3{font-size:18px;font-weight:800;margin-bottom:20px;padding-right:40px;}
+    #shareCanvasEl{width:100%;border-radius:12px;display:block;margin-bottom:20px;}
+    .share-actions{display:flex;gap:10px;}
+    .share-actions .btn{flex:1;justify-content:center;}
+
+    /* TOAST */
+    .toast{
+      position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);
+      background:var(--dark);color:#fff;font-size:13px;font-weight:600;
+      padding:10px 22px;border-radius:100px;z-index:3000;
+      opacity:0;transition:all 0.25s ease;pointer-events:none;white-space:nowrap;
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+    /* RESPONSIVE */
+    @media(max-width:768px){
+      .nav-links{display:none;}
+      .confessions-grid{grid-template-columns:1fr 1fr;}
+      .conf-main{padding:48px 16px 0;}
+      .form-card{padding:28px 20px;}
+      .suggest-card{padding:28px 20px;}
+      .suggest-row{flex-direction:column;}
+      .share-actions{flex-direction:column;}
+    }
+    @media(max-width:480px){
+      .confessions-grid{grid-template-columns:1fr;}
+      .conf-hero-inner{padding:48px 18px;}
+      .past-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html"><span>जु</span>gaad</a>
+  <div class="nav-links">
+    <a href="explore.html">Explore</a>
+    <a href="categories/index.html">Library</a>
+    <a href="confessions.html" class="active">Confessions</a>
+    <a href="prompts.html">AI Prompts</a>
+    <a href="submit.html">Submit a Spot</a>
+  </div>
+  <div class="nav-right">
+    <a class="btn btn-primary btn-sm" href="explore.html">Find Jugaad</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="conf-hero">
+  <div class="conf-hero-inner">
+    <div class="conf-week-badge" id="weekBadge">Week of —</div>
+    <h1>Confessions<br><em>Corner</em></h1>
+    <p class="conf-tagline">One prompt &nbsp;·&nbsp; Twenty spots &nbsp;·&nbsp; Anonymous</p>
+
+    <div class="conf-prompt-box">
+      <div class="conf-prompt-label">This week's prompt</div>
+      <div class="conf-prompt-text" id="weekPromptText">Loading…</div>
+    </div>
+
+    <div class="conf-counter-row">
+      <span class="count-num" id="countNum">—</span>
+      <div class="count-meta">
+        <span class="count-of">of 20</span>
+        <span class="count-label">submitted</span>
+      </div>
+    </div>
+    <div class="conf-progress">
+      <div class="conf-progress-fill" id="confFill"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBMISSION + BOARD -->
+<section>
+  <div class="conf-main">
+
+    <!-- Form state -->
+    <div id="formState">
+      <div class="form-card">
+        <div class="form-card-head">
+          <div class="anon-badge">🔒 Anonymous</div>
+          <h2>Say it. Anonymously.</h2>
+          <p>No name. No login. Just your truth.</p>
+        </div>
+        <textarea class="conf-textarea" id="confText" maxlength="280" placeholder="Type your confession here…"></textarea>
+        <div class="textarea-meta">
+          <span class="char-disp" id="charDisp">0 / 280</span>
+        </div>
+        <button class="btn btn-primary conf-submit-btn" id="submitBtn">Submit Anonymously →</button>
+        <p class="conf-form-note">No account needed. Nothing stored beyond your text.</p>
+        <div class="form-inline-msg" id="formMsg"></div>
+      </div>
+    </div>
+
+    <!-- Success state (shown after you submit) -->
+    <div id="successState" style="display:none;">
+      <div class="success-card">
+        <div class="success-icon">🔒</div>
+        <h2>You're in.</h2>
+        <p>Your confession has been added anonymously. Check back once all 20 slots fill up to see the full board.</p>
+      </div>
+    </div>
+
+    <!-- Board state (shown when 20 submissions exist) -->
+    <div id="boardState" style="display:none;">
+      <div class="board-header">
+        <div class="board-full-pill">✓ Board Full</div>
+        <h2>This week's confessions</h2>
+        <p>20 anonymous confessions. No names, no rankings, no judgment.</p>
+      </div>
+      <div class="confessions-grid" id="confGrid"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PAST WEEKS -->
+<section class="past-section">
+  <div class="section-eyebrow">Past Weeks</div>
+  <div id="pastWeeksList">
+    <div class="past-empty">Loading…</div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-nav">
+    <a href="index.html">Home</a>
+    <a href="explore.html">Explore</a>
+    <a href="categories/index.html">Library</a>
+    <a href="confessions.html">Confessions</a>
+    <a href="prompts.html">AI Prompts</a>
+    <a href="submit.html">Submit a Spot</a>
+  </div>
+  <div class="footer-copy">Made with love by <span class="footer-name">Sreemita</span></div>
+</footer>
+
+<!-- SHARE MODAL -->
+<div id="shareModal" class="modal-overlay" style="display:none;" onclick="handleOverlayClick(event)">
+  <div class="share-modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeShare()">✕</button>
+    <h3>Share this confession</h3>
+    <canvas id="shareCanvasEl"></canvas>
+    <div class="share-actions">
+      <button class="btn btn-primary" id="shareNativeBtn">Share →</button>
+      <button class="btn btn-yellow" id="downloadBtn">Download PNG</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<script>
+// ================================================================
+// WEEKLY PROMPT — update this string every Monday
+// ================================================================
+const WEEKLY_PROMPT = "What's something your college does that makes absolutely no sense?";
+
+// ----------------------------------------------------------------
+// WEEK UTILITIES
+// ----------------------------------------------------------------
+function getWeekStart(d = new Date()) {
+  const copy = new Date(d);
+  const day = copy.getDay();
+  copy.setDate(copy.getDate() + (day === 0 ? -6 : 1 - day));
+  copy.setHours(0, 0, 0, 0);
+  return copy.toISOString().split('T')[0];
+}
+
+function fmtDate(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+const WEEK = getWeekStart();
+const LS_KEY = 'jg_conf_' + WEEK;
+let _prompt = WEEKLY_PROMPT;
+let _sharedCanvas = null;
+
+// ----------------------------------------------------------------
+// LOCALSTORAGE HELPERS
+// ----------------------------------------------------------------
+function loadWeekConfessions(week) {
+  try { return JSON.parse(localStorage.getItem('jg_conf_' + week) || '[]'); }
+  catch (_) { return []; }
+}
+
+function saveWeekConfessions(week, list) {
+  localStorage.setItem('jg_conf_' + week, JSON.stringify(list));
+}
+
+function allPastWeeks() {
+  const weeks = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('jg_conf_')) {
+      const w = key.replace('jg_conf_', '');
+      if (w !== WEEK) weeks.push(w);
+    }
+  }
+  return weeks.sort((a, b) => b.localeCompare(a));
+}
+
+// ----------------------------------------------------------------
+// INIT
+// ----------------------------------------------------------------
+(function init() {
+  document.getElementById('weekBadge').textContent = 'Week of ' + fmtDate(WEEK);
+  document.getElementById('weekPromptText').textContent = _prompt;
+  refreshBoard();
+  loadPastWeeks();
+})();
+
+// ----------------------------------------------------------------
+// COUNT + BOARD
+// ----------------------------------------------------------------
+function refreshBoard() {
+  const list = loadWeekConfessions(WEEK);
+  setCounter(list.length);
+  if (list.length >= 20) renderBoard(list);
+}
+
+function setCounter(n) {
+  const num = Math.min(n, 20);
+  document.getElementById('countNum').textContent = num;
+  document.getElementById('confFill').style.width = (num / 20 * 100) + '%';
+  if (num >= 18) {
+    document.getElementById('confFill').style.background = 'linear-gradient(90deg,#E53935,#FF6B00)';
+    document.getElementById('countNum').style.color = '#E53935';
+  } else if (num >= 14) {
+    document.getElementById('confFill').style.background = 'linear-gradient(90deg,#FF6B00,#FFD012)';
+  }
+}
+
+function renderBoard(list) {
+  document.getElementById('formState').style.display = 'none';
+  document.getElementById('successState').style.display = 'none';
+  document.getElementById('boardState').style.display = 'block';
+
+  const grid = document.getElementById('confGrid');
+  grid.innerHTML = list.slice(0, 20).map((c, i) => `
+    <div class="c-card">
+      <span class="c-card-num">${String(i + 1).padStart(2, '0')}</span>
+      <p class="c-card-text">${escHtml(c.text)}</p>
+      <div class="c-card-foot">
+        <button class="share-btn" onclick="openShare(${JSON.stringify(c.text)})">Share ↗</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ----------------------------------------------------------------
+// SUBMIT FORM
+// ----------------------------------------------------------------
+const confText = document.getElementById('confText');
+const charDisp = document.getElementById('charDisp');
+
+confText.addEventListener('input', () => {
+  const len = confText.value.length;
+  charDisp.textContent = len + ' / 280';
+  charDisp.classList.toggle('warn', len > 250);
+});
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  const text = confText.value.trim();
+  if (!text) { setFormMsg('Write something first.', '#E53935'); return; }
+  if (text.length < 8) { setFormMsg('A little short — say a bit more.', '#E53935'); return; }
+
+  const list = loadWeekConfessions(WEEK);
+  if (list.length >= 20) {
+    setFormMsg('All 20 spots are filled. Check back next Monday!', '#E53935');
+    refreshBoard();
+    return;
+  }
+
+  list.push({ text, ts: Date.now() });
+  saveWeekConfessions(WEEK, list);
+
+  document.getElementById('formState').style.display = 'none';
+  document.getElementById('successState').style.display = 'block';
+  refreshBoard();
+});
+
+function setFormMsg(txt, color) {
+  const el = document.getElementById('formMsg');
+  el.textContent = txt;
+  el.style.color = color;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+// ----------------------------------------------------------------
+// PAST WEEKS
+// ----------------------------------------------------------------
+function loadPastWeeks() {
+  const weeks = allPastWeeks();
+  if (!weeks.length) {
+    document.getElementById('pastWeeksList').innerHTML =
+      '<div class="past-empty">No past weeks yet — check back next Monday.</div>';
+    return;
+  }
+  document.getElementById('pastWeeksList').innerHTML = weeks.map(w => `
+    <div class="past-week-item" data-week="${w}">
+      <div class="past-week-hd" onclick="togglePast(this)">
+        <div class="past-week-date">Week of ${fmtDate(w)}</div>
+        <span class="past-week-chevron">▾</span>
+      </div>
+      <div class="past-week-body" id="pw-${w}" style="display:none;">
+      </div>
+    </div>
+  `).join('');
+}
+
+function togglePast(hd) {
+  const item = hd.parentElement;
+  const week = item.dataset.week;
+  const body = document.getElementById('pw-' + week);
+  item.classList.toggle('open');
+  body.style.display = item.classList.contains('open') ? 'block' : 'none';
+
+  if (item.classList.contains('open') && !body.dataset.loaded) {
+    body.dataset.loaded = 'true';
+    const list = loadWeekConfessions(week);
+    if (list.length) {
+      body.innerHTML = `<div class="past-grid">${list.map(c =>
+        `<div class="past-c-card">${escHtml(c.text)}</div>`).join('')}</div>`;
+    } else {
+      body.innerHTML = '<div class="past-empty" style="padding:12px 0;">No confessions saved for this week.</div>';
+    }
+  }
+}
+
+// ----------------------------------------------------------------
+// SHARE MODAL + CANVAS CARD
+// ----------------------------------------------------------------
+function openShare(text) {
+  _sharedCanvas = buildCard(text, _prompt);
+
+  const el = document.getElementById('shareCanvasEl');
+  el.width = _sharedCanvas.width;
+  el.height = _sharedCanvas.height;
+  el.getContext('2d').drawImage(_sharedCanvas, 0, 0);
+  el.style.width = '100%';
+  el.style.height = 'auto';
+
+  document.getElementById('shareModal').style.display = 'flex';
+}
+
+function closeShare() {
+  document.getElementById('shareModal').style.display = 'none';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('shareModal')) closeShare();
+}
+
+document.getElementById('shareNativeBtn').addEventListener('click', () => {
+  if (!_sharedCanvas) return;
+  _sharedCanvas.toBlob(async blob => {
+    const file = new File([blob], 'jugaad-confession.png', { type: 'image/png' });
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ title: 'Jugaad Confessions', text: '#jugaadconfessions @jugaadapp', files: [file] });
+      } catch (_) {}
+    } else {
+      dlCanvas(_sharedCanvas, 'jugaad-confession.png');
+      toast('Image saved — add #jugaadconfessions when you post!');
+    }
+  }, 'image/png');
+});
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  if (_sharedCanvas) {
+    dlCanvas(_sharedCanvas, 'jugaad-confession.png');
+    toast('Saved! Add #jugaadconfessions when you post.');
+  }
+});
+
+function buildCard(text, prompt) {
+  const W = 1080, H = 1080;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const ctx = c.getContext('2d');
+
+  // Background gradient
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#1A1200');
+  bg.addColorStop(0.55, '#2A1600');
+  bg.addColorStop(1, '#1A0A00');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Radial glow
+  const glow = ctx.createRadialGradient(W * 0.65, H * 0.45, 0, W * 0.65, H * 0.45, 560);
+  glow.addColorStop(0, 'rgba(255,107,0,0.14)');
+  glow.addColorStop(1, 'rgba(255,107,0,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, H);
+
+  // Top + bottom accent bars
+  ctx.fillStyle = '#FF6B00';
+  ctx.fillRect(0, 0, W, 10);
+  ctx.fillStyle = '#FFD012';
+  ctx.fillRect(0, H - 10, W, 10);
+
+  // Logo
+  ctx.font = '900 58px serif';
+  ctx.fillStyle = '#FF6B00';
+  ctx.fillText('जु', 80, 140);
+  ctx.font = '900 54px Arial, sans-serif';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText('gaad', 136, 140);
+
+  // "CONFESSIONS CORNER" label
+  ctx.font = '700 22px Arial, sans-serif';
+  ctx.fillStyle = '#FFD012';
+  ctx.fillText('CONFESSIONS CORNER', 80, 184);
+
+  // Divider
+  ctx.strokeStyle = 'rgba(255,107,0,0.3)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(80, 214); ctx.lineTo(1000, 214); ctx.stroke();
+
+  // Prompt (small, muted, italic)
+  ctx.font = 'italic 400 24px Arial, sans-serif';
+  ctx.fillStyle = 'rgba(255,253,247,0.36)';
+  wrapText(ctx, '“' + prompt + '”', 80, 272, 920, 38);
+
+  // Big decorative quote
+  ctx.font = '900 200px Georgia, serif';
+  ctx.fillStyle = 'rgba(255,107,0,0.07)';
+  ctx.fillText('“', 44, 590);
+
+  // Confession text
+  ctx.font = '700 56px Arial, sans-serif';
+  ctx.fillStyle = '#FFFFFF';
+  const endY = wrapText(ctx, text, 88, 468, 900, 82);
+
+  // Closing decorative quote
+  ctx.font = '900 200px Georgia, serif';
+  ctx.fillStyle = 'rgba(255,107,0,0.07)';
+  ctx.textAlign = 'right';
+  ctx.fillText('”', 1038, Math.min(endY + 80, 988));
+  ctx.textAlign = 'left';
+
+  // Attribution
+  ctx.font = '600 24px Arial, sans-serif';
+  ctx.fillStyle = 'rgba(160,120,32,0.75)';
+  ctx.fillText('#jugaadconfessions', 80, 1010);
+  ctx.textAlign = 'right';
+  ctx.fillText('@jugaadapp', 1000, 1010);
+  ctx.textAlign = 'left';
+
+  return c;
+}
+
+function wrapText(ctx, text, x, y, maxW, lh) {
+  const words = text.split(' ');
+  let line = '';
+  for (let i = 0; i < words.length; i++) {
+    const test = line + words[i] + ' ';
+    if (ctx.measureText(test).width > maxW && i > 0) {
+      ctx.fillText(line.trim(), x, y);
+      line = words[i] + ' ';
+      y += lh;
+    } else {
+      line = test;
+    }
+  }
+  ctx.fillText(line.trim(), x, y);
+  return y;
+}
+
+function dlCanvas(canvas, name) {
+  const a = document.createElement('a');
+  a.download = name;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+// ----------------------------------------------------------------
+// UTILITIES
+// ----------------------------------------------------------------
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+</script>
+</body>
+</html>
