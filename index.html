@@ -56,13 +56,14 @@
     .dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,0.35);transition:all 0.3s;cursor:pointer;border:none;}
     .dot.active{background:var(--yellow);width:22px;}
 
-    /* CITY STRIP */
-    .city-strip{display:flex;background:var(--dark);overflow-x:auto;scrollbar-width:none;}
-    .city-strip::-webkit-scrollbar{display:none;}
-    .city-tab{flex:1;min-width:90px;padding:14px 8px;text-align:center;font-size:12px;font-weight:700;color:rgba(255,255,255,0.38);cursor:pointer;transition:all 0.2s;border:none;background:none;font-family:'Poppins',sans-serif;border-bottom:2.5px solid transparent;white-space:nowrap;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px;}
-    .city-tab:hover{color:rgba(255,255,255,0.7);}
-    .city-tab.active{color:var(--yellow);border-bottom-color:var(--yellow);}
-    .city-emoji{font-size:18px;}
+    /* CITY MARQUEE STRIP */
+    .city-strip{background:var(--dark);overflow:hidden;padding:10px 0;border-top:1px solid rgba(255,255,255,0.06);}
+    .city-marquee{display:flex;align-items:center;animation:city-scroll 22s linear infinite;width:max-content;}
+    .city-strip:hover .city-marquee{animation-play-state:paused;}
+    .city-tab{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.38);padding:4px 20px;white-space:nowrap;text-decoration:none;transition:color 0.2s;}
+    .city-tab:hover{color:var(--yellow);}
+    .city-sep{color:rgba(255,255,255,0.15);padding:0 4px;font-size:10px;}
+    @keyframes city-scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 
     /* STATS */
     .stats-bar{background:var(--orange);padding:20px 28px;display:flex;justify-content:center;gap:52px;flex-wrap:wrap;}
@@ -81,13 +82,15 @@
     .step-num{width:46px;height:46px;border-radius:13px;background:var(--dark);color:var(--yellow);font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;}
     .step h3{font-size:16px;font-weight:800;color:var(--dark);}
     .step p{font-size:13px;color:var(--mid);line-height:1.75;}
+    .step-icon{width:52px;height:52px;display:block;}
 
     /* LIBRARY BLOCK */
     .library-section{background:var(--surface-2);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border);padding:88px 28px;}
-    .library-inner{max-width:640px;margin:0 auto;}
+    .library-inner{max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:56px;align-items:center;}
     .library-inner .section-eyebrow{margin-bottom:18px;}
     .library-inner h2{font-size:clamp(26px,4vw,40px);font-weight:900;color:var(--dark);letter-spacing:-1.5px;line-height:1.1;margin-top:10px;margin-bottom:16px;}
     .library-inner p{font-size:15px;color:var(--mid);line-height:1.8;margin-bottom:32px;max-width:520px;}
+    .library-illus{flex-shrink:0;}
 
     /* MOSAIC */
     .mosaic-section{padding:88px 28px;max-width:960px;margin:0 auto;}
@@ -117,7 +120,8 @@
     .pin-dot{width:14px;height:14px;border-radius:50%;position:absolute;top:-7px;left:50%;transform:translateX(-50%);box-shadow:0 2px 5px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.3);}
 
     /* CTA BANNER */
-    .cta-banner{margin:0 28px 88px;border-radius:var(--radius);background:var(--dark);padding:56px 44px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;}
+    .cta-banner{margin:0 28px 88px;border-radius:var(--radius);background:var(--dark);padding:56px 44px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;position:relative;overflow:hidden;}
+    .cta-deco{position:absolute;right:0;bottom:0;opacity:0.55;pointer-events:none;}
     .cta-banner h2{font-size:clamp(22px,3.5vw,36px);font-weight:900;color:#fff;letter-spacing:-1px;max-width:400px;line-height:1.2;}
     .cta-banner h2 span{color:var(--yellow);}
     .cta-banner p{font-size:13px;color:rgba(255,255,255,0.45);margin-top:8px;}
@@ -143,6 +147,8 @@
       .cta-banner{padding:36px 24px;}
       .hero-content{padding:0 20px 48px;}
       .vartalaap-promo{grid-template-columns:1fr;padding:36px 28px;gap:32px;}
+      .library-inner{grid-template-columns:1fr;}
+      .library-illus{display:none;}
     }
     @media(max-width:480px){
       nav{padding:0 18px;}
@@ -200,11 +206,18 @@
 </section>
 
 <div class="city-strip">
-  <a class="city-tab active" href="explore.html?city=Delhi"><span class="city-emoji">🏛️</span>Delhi</a>
-  <a class="city-tab" href="explore.html?city=Kolkata"><span class="city-emoji">🌸</span>Kolkata</a>
-  <a class="city-tab" href="explore.html?city=Pune"><span class="city-emoji">🎓</span>Pune</a>
-  <a class="city-tab" href="explore.html?city=Bengaluru"><span class="city-emoji">🌿</span>Bengaluru</a>
-  <a class="city-tab" href="explore.html?city=Manipal"><span class="city-emoji">🌊</span>Manipal</a>
+  <div class="city-marquee">
+    <a class="city-tab" href="explore.html?city=Delhi">Delhi</a><span class="city-sep">·</span>
+    <a class="city-tab" href="explore.html?city=Kolkata">Kolkata</a><span class="city-sep">·</span>
+    <a class="city-tab" href="explore.html?city=Pune">Pune</a><span class="city-sep">·</span>
+    <a class="city-tab" href="explore.html?city=Bengaluru">Bengaluru</a><span class="city-sep">·</span>
+    <a class="city-tab" href="explore.html?city=Manipal">Manipal</a><span class="city-sep">·</span>
+    <a class="city-tab" href="explore.html?city=Delhi">Delhi</a><span class="city-sep">·</span>
+    <a class="city-tab" href="explore.html?city=Kolkata">Kolkata</a><span class="city-sep">·</span>
+    <a class="city-tab" href="explore.html?city=Pune">Pune</a><span class="city-sep">·</span>
+    <a class="city-tab" href="explore.html?city=Bengaluru">Bengaluru</a><span class="city-sep">·</span>
+    <a class="city-tab" href="explore.html?city=Manipal">Manipal</a><span class="city-sep">·</span>
+  </div>
 </div>
 
 <div class="stats-bar">
@@ -222,16 +235,37 @@
   </div>
   <div class="steps">
     <div class="step">
+      <svg class="step-icon" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="26" cy="22" r="20" fill="#FFD012" opacity="0.1"/>
+        <path d="M26 7C18.82 7 13 12.82 13 20C13 29.74 26 45 26 45C26 45 39 29.74 39 20C39 12.82 33.18 7 26 7Z" fill="#FF6B00"/>
+        <circle cx="26" cy="20" r="6" fill="#FFD012"/>
+        <circle cx="26" cy="20" r="3" fill="#FF6B00"/>
+      </svg>
       <div class="step-num">1</div>
       <h3>Pick your city</h3>
       <p>We cover Delhi, Kolkata, Pune, Bengaluru, and Manipal. Filter by your college town and see every curated spot on the map.</p>
     </div>
     <div class="step">
+      <svg class="step-icon" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="26" cy="26" r="20" fill="#FFD012" opacity="0.1"/>
+        <circle cx="23" cy="23" r="11" stroke="#FF6B00" stroke-width="2.5" fill="rgba(255,107,0,0.07)"/>
+        <line x1="31" y1="31" x2="41" y2="41" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="17.5" y1="23" x2="28.5" y2="23" stroke="#FFD012" stroke-width="2" stroke-linecap="round"/>
+        <line x1="17.5" y1="19" x2="28.5" y2="19" stroke="#FFD012" stroke-width="2" stroke-linecap="round"/>
+        <line x1="17.5" y1="27" x2="24" y2="27" stroke="#FFD012" stroke-width="2" stroke-linecap="round"/>
+      </svg>
       <div class="step-num">2</div>
       <h3>Find what you need</h3>
       <p>Filter by category: printers, food stalls, trophies, flex banners, photographers and more. Every spot has tips from whoever submitted it.</p>
     </div>
     <div class="step">
+      <svg class="step-icon" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="26" cy="26" r="20" fill="#FFD012" opacity="0.1"/>
+        <line x1="26" y1="36" x2="26" y2="16" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M18 24 L26 16 L34 24" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <path d="M16 40 C16 36 20 33.5 26 33.5 C32 33.5 36 36 36 40" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <line x1="15" y1="40" x2="37" y2="40" stroke="#FFD012" stroke-width="2" stroke-linecap="round"/>
+      </svg>
       <div class="step-num">3</div>
       <h3>Pay it forward</h3>
       <p>Found a hidden gem? Submit it. Every spot gets reviewed before going live so the curated map stays trustworthy for the next organiser.</p>
@@ -241,10 +275,39 @@
 
 <section class="library-section">
   <div class="library-inner">
-    <div class="section-eyebrow">The Jugaad Library</div>
-    <h2>Know before you spend<br/>a single rupee</h2>
-    <p>Price ranges, what to ask vendors, red flags, checklists, one guide per category. Everything you need before you open your wallet. No surprises, no regret.</p>
-    <a class="btn btn-yellow" href="categories/index.html">Browse the full Library →</a>
+    <div>
+      <div class="section-eyebrow">The Jugaad Library</div>
+      <h2>Know before you spend<br/>a single rupee</h2>
+      <p>Price ranges, what to ask vendors, red flags, checklists, one guide per category. Everything you need before you open your wallet. No surprises, no regret.</p>
+      <a class="btn btn-yellow" href="categories/index.html">Browse the full Library →</a>
+    </div>
+    <div class="library-illus">
+      <svg width="190" height="230" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="26" y="26" width="148" height="196" rx="16" fill="#FF6B00" opacity="0.06"/>
+        <rect x="18" y="14" width="148" height="196" rx="16" fill="white" stroke="#FFE4B0" stroke-width="1.5"/>
+        <rect x="18" y="14" width="148" height="50" rx="16" fill="#FF6B00"/>
+        <rect x="18" y="46" width="148" height="18" fill="#FF6B00"/>
+        <rect x="34" y="25" width="74" height="6" rx="3" fill="rgba(255,255,255,0.48)"/>
+        <rect x="34" y="35" width="50" height="4" rx="2" fill="rgba(255,255,255,0.26)"/>
+        <circle cx="150" cy="37" r="17" fill="#FFD012"/>
+        <text x="150" y="43" text-anchor="middle" font-family="serif" font-size="16" font-weight="900" fill="#1A1200">₹</text>
+        <rect x="34" y="82" width="18" height="18" rx="5" fill="#FFD012"/>
+        <path d="M37.5 91 L41 94.5 L51 84.5" stroke="#1A1200" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="62" y="85" width="82" height="5" rx="2.5" fill="#1A1200" opacity="0.15"/>
+        <rect x="62" y="94" width="58" height="3.5" rx="1.75" fill="#FF6B00" opacity="0.2"/>
+        <rect x="34" y="114" width="18" height="18" rx="5" fill="#FFD012"/>
+        <path d="M37.5 123 L41 126.5 L51 116.5" stroke="#1A1200" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="62" y="117" width="90" height="5" rx="2.5" fill="#1A1200" opacity="0.15"/>
+        <rect x="62" y="126" width="66" height="3.5" rx="1.75" fill="#FF6B00" opacity="0.2"/>
+        <rect x="34" y="146" width="18" height="18" rx="5" fill="none" stroke="#FFD012" stroke-width="2"/>
+        <rect x="62" y="149" width="76" height="5" rx="2.5" fill="#1A1200" opacity="0.11"/>
+        <rect x="62" y="158" width="48" height="3.5" rx="1.75" fill="#FF6B00" opacity="0.14"/>
+        <rect x="34" y="178" width="18" height="18" rx="5" fill="none" stroke="#FFD012" stroke-width="2" opacity="0.35"/>
+        <rect x="62" y="181" width="62" height="5" rx="2.5" fill="#1A1200" opacity="0.07"/>
+        <circle cx="152" cy="182" r="20" fill="#FFF3E8" stroke="#FFD012" stroke-width="1.5"/>
+        <text x="152" y="188" text-anchor="middle" font-family="Poppins,sans-serif" font-size="10" font-weight="800" fill="#FF6B00">FREE</text>
+      </svg>
+    </div>
   </div>
 </section>
 
@@ -291,6 +354,29 @@
 </section>
 
 <div class="cta-banner">
+  <div class="cta-deco" aria-hidden="true">
+    <svg width="220" height="180" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="68" x2="220" y2="68" stroke="rgba(255,208,18,0.09)" stroke-width="8"/>
+      <line x1="0" y1="118" x2="220" y2="118" stroke="rgba(255,208,18,0.07)" stroke-width="8"/>
+      <line x1="88" y1="0" x2="88" y2="180" stroke="rgba(255,208,18,0.09)" stroke-width="8"/>
+      <line x1="156" y1="0" x2="156" y2="180" stroke="rgba(255,208,18,0.07)" stroke-width="8"/>
+      <rect x="8" y="8" width="72" height="52" rx="8" fill="rgba(255,107,0,0.07)"/>
+      <rect x="8" y="76" width="72" height="34" rx="8" fill="rgba(255,107,0,0.06)"/>
+      <rect x="8" y="126" width="72" height="46" rx="8" fill="rgba(255,107,0,0.05)"/>
+      <rect x="96" y="8" width="52" height="52" rx="8" fill="rgba(255,107,0,0.07)"/>
+      <rect x="96" y="76" width="52" height="34" rx="8" fill="rgba(255,107,0,0.05)"/>
+      <rect x="164" y="8" width="48" height="52" rx="8" fill="rgba(255,107,0,0.06)"/>
+      <rect x="164" y="76" width="48" height="34" rx="8" fill="rgba(255,107,0,0.07)"/>
+      <rect x="164" y="126" width="48" height="46" rx="8" fill="rgba(255,107,0,0.05)"/>
+      <path d="M60 54C56.686 54 54 56.686 54 60C54 66.314 60 76 60 76C60 76 66 66.314 66 60C66 56.686 63.314 54 60 54Z" fill="#FF6B00"/>
+      <circle cx="60" cy="60" r="3.5" fill="#FFD012"/>
+      <path d="M122 14C119.239 14 117 16.239 117 19C117 24.418 122 32 122 32C122 32 127 24.418 127 19C127 16.239 124.761 14 122 14Z" fill="#FFD012"/>
+      <circle cx="122" cy="19" r="3" fill="#FF6B00"/>
+      <path d="M188 80C185.791 80 184 81.791 184 84C184 87.866 188 94 188 94C188 94 192 87.866 192 84C192 81.343 190.209 80 188 80Z" fill="#FF6B00" opacity="0.75"/>
+      <circle cx="188" cy="84" r="2.5" fill="#FFD012"/>
+      <path d="M30 130C28.343 130 27 131.343 27 133C27 135.657 30 140 30 140C30 140 33 135.657 33 133C33 131.343 31.657 130 30 130Z" fill="#FFD012" opacity="0.55"/>
+    </svg>
+  </div>
   <div>
     <h2>Know a spot that belongs<br/>on the <span>curated map?</span></h2>
     <p>Takes 2 minutes. Helps every organiser after you.</p>
